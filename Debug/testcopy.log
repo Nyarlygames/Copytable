@@ -1,0 +1,28 @@
+﻿Build started 29/11/2015 23:55:48.
+     1>Project "D:\Projects\testcopy\testcopy.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\testcopy.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         d:\Programs\VS2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt testcopy.cpp
+         testcopy.cpp
+     1>d:\projects\testcopy\testcopy.cpp(76): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\programs\vs2010\vc\include\string.h(197) : see declaration of 'strtok'
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         d:\Programs\VS2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Projects\testcopy\Debug\testcopy.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\testcopy.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Projects\testcopy\Debug\testcopy.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Projects\testcopy\Debug\testcopy.lib" /MACHINE:X86 Debug\testcopy.exe.embed.manifest.res
+         Debug\testcopy.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\testcopy.exe.embed.manifest" /manifest Debug\testcopy.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         testcopy.vcxproj -> D:\Projects\testcopy\Debug\testcopy.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\testcopy.unsuccessfulbuild".
+         Touching "Debug\testcopy.lastbuildstate".
+     1>Done Building Project "D:\Projects\testcopy\testcopy.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.63
