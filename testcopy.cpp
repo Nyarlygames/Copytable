@@ -19,6 +19,7 @@ const char* const DELIMITER = "\n";
 const char* const SUB_DELIMITER = ">";
 std::string str;
 std::string str_class1;
+std::string str_class2;
 std::string str_id;
 char *version;
 
@@ -60,7 +61,7 @@ int main()
   ofstream convert ("convert.txt",ofstream::binary);
   Mantisdb = new Mantis[Max_mantis];
   
-  fin.open("test3.txt"); // open a file
+  fin.open("test2.txt"); // open a file
  if (!fin.good()) 
     return 1; //exit if file not found
   
@@ -83,51 +84,51 @@ int main()
 				
 		}// no more tokens
       }
-	  int maxdesc = n; 
-		  while (maxdesc >= 0) {
+		  while (n >= 0) {
 			  str = buf;
 			  // IF ID = NEW MANTIS
-			  size_t found_id = str.find("bug_id=");
-			  if (found_id!=std::string::npos) {
-			//	cout << "first 'id' found at: " << str.c_str() << " char : " << found_id << " mantisnb : "<<mantisnb  << '\n';
-					  curline = 0;
-						 size_t found_id2 = str.find("\">");
-						  if (found_id2!=std::string::npos) {
-								//	cout << "second 'id' found at: " << curline <<" char1 : " << found_id << " char : " << found_id2 << " " << '\n';
-									str_id = str.substr(found_id+7, found_id2 - found_id - 7);
-								
-										cout << "id : " << str_id.c_str() << " mantisnb"<<mantisnb <<  endl;
-								//	log << "id : " << str_id.c_str() <<  endl;
-									//convert << str_id.c_str();
-							  if (mantisnb >=0) {
-								  if (strcmp(str.c_str(),Mantisdb[mantisnb].id.c_str())) {
-								  }
-									Mantisdb[mantisnb].id = str_id.c_str();
-									Mantisdb[mantisnb].reg = mantisnb;
-									mantisnb++;
-								}
-								  else {
-cout<< "test";								  }
-							  }
-						  }
 
-			  }
-			std::size_t found_item = str.find("td>  class=\"center\">");
+			std::size_t found_item = str.find("</");
 			  if (found_item!=std::string::npos) {
-				//  	cout << "first 'item' found at: " << curline << " char : " << found_item << " mantisnb" << mantisnb << '\n';
-						 size_t found_item2 = str.find("</");
+				 //	cout << "first 'item' found at: " << curline << " char : " << found_item << " mantisnb" << mantisnb << '\n';
+						 size_t found_item2 = str.find("/>");
+						// cout << found_item2<<endl;
 						//	  cout << "curline : " << curline << " str : " << str.c_str() << endl;
-						  if (found_item2!=std::string::npos) {
-								//	cout << "second 'id' found at: " << curline <<" char1 : " << found_id << " char : " << found_id2 << " " << '\n';
-									str_class1 = str.substr(found_item+7, found_item2 - found_item - 7);
-								//	cout << "classstuff : " << str_class1.c_str() <<  endl;
-							//		log << "	classstuff : " << str_class1.c_str() <<  endl;
+								
+				  if (found_item2!=std::string::npos) {
+						 		log << "second 'item' found at: " << curline <<" char1 : " << found_item << " char : " << found_item2 << " " << '\n';
+								  str_class1 = str.substr(found_item2+2, found_item - found_item2-2);
+								//cout << "classstuff : " << str.c_str() <<  endl;
+								 // cout << "	goodstr : " << str_class1.c_str() << " length : " << str_class1.length()<< endl;
+								convert << str_class1.c_str() << "\t";
+							//	cout << str_class1.c_str() << endl;
+								
+								size_t found_item3 = str_class1.find("a");
+								
+						  if (found_item3!=std::string::npos) {
+										  size_t found_id = str_class1.find("00");
+										  if (found_id!=std::string::npos) {
+											cout << "first 'iditem' found at: " << str.c_str() << " char : " << found_id << " mantisnb : "<<mantisnb  << '\n';
+												  curline = 0;
+															//	cout << "second 'id' found at: " << curline <<" char1 : " << found_id << " char : " << found_id2 << " " << '\n';
+												 // cout << "ITEM2 : " << found_item3 <<endl;
+												  str_id = str_class1.substr(found_id, found_item3 - found_id);
+																//cout << str_id.c_str() ;
+															//	log << "id : " << str_id.c_str() <<  endl;
+																//convert << str_id.c_str();
+													/*			Mantisdb[mantisnb].reg = mantisnb;
+																Mantisdb[mantisnb].id = str_id;
+																mantisnb++;*/
+																	cout << "realid : " <<str_id.c_str() << " mantisnb" <<mantisnb <<  endl;
+																	convert << str_id.c_str() << endl;
+																	mantisnb++;
+																	cout << str_id.c_str() << endl;
+														  }
 						  }
-				  curline++;
+				  }
 			  }
-		  maxdesc--;
+		  n--;
 		}
-		  convert<< endl;
 	  
 	  /*
     token2[0] = strtok(buf2, SUB_DELIMITER); // first token
