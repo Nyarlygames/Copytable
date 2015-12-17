@@ -1,0 +1,10 @@
+view issues
+inspect element
+get div
+remove first line and last line divs
+replace =&gt; with =>
+launch tool
+copy results to gdrive on row 2 sheet "HistoMantis"
+remove extra columns
+use myHisto
+=> create graph

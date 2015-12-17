@@ -961,3 +961,63 @@ cellbase.setValue(cellbase.getValue() + "\n" +  "Chaos is at work, please be pat
   cellbase.setValue(labelproject+ " : " + project + "\n" + labelfilter2+ " : " + filtre2 + "\n"+ labelfilter1 + " : " + filtre1+"\n"+ labelfilter3 + " : " + filtre3+"\n"+ labelmod + " : " + mod);              
   cellbase.setFontSize(8);
 }
+
+// -------------------------------------------------------------- Debug history
+
+function myHisto() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rangeresults = ss.getRange('A2');
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("HistoMantis");
+  var rangehisto = sshisto.getRange(2, 1,sshisto.getLastRow(),sshisto.getLastColumn());
+  var valuehisto = rangehisto.getValues();
+  var foundclosed = 0;
+  var foundopen = 0;
+  var foundate = 0;
+  var uniquedate = new Array(rangehisto.getWidth());
+  var newarr = new Array(rangehisto.getWidth());
+  var closearr = new Array(rangehisto.getWidth());
+  
+  
+  
+  var isunique = 0;
+  for (var fields in valuehisto) {
+    
+    if (valuehisto[fields][4].match("=> closed")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          closearr[knowndate]++;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        closearr[foundate] = 1;
+        newarr[foundate] = 0;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    
+    if (valuehisto[fields][3].match("New Issue")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          newarr[knowndate]++;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        newarr[foundate] = 1;
+        closearr[foundate] = 0;
+        foundate++;
+      }
+      isunique = 0;
+    }
+  }
+  
+  for (var display in uniquedate) {
+    rangeresults.offset(display,0).setValue(uniquedate[display]);
+    rangeresults.offset(display,1).setValue(closearr[display]);
+    rangeresults.offset(display,2).setValue(newarr[display]);
+  }
+}
