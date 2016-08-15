@@ -1,8 +1,13 @@
 Script for google sheets :
-- Search : search in mantis db, shows count, id, summary
-- SearchTool : creates high level plan based on mantis categories, sorted with criterias
+- automatic test plans
+- search/query mantis database
+- search/query exported mantis database (csv imported to gdrive)
+- create high level plans
+- create debug curve graph
+- various tools
+- other random scripts
 
-Script for mantis database:
+Script for mantis database (stats tool):
 - Export stats
 - Create graphs
 
