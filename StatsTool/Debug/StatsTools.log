@@ -1,0 +1,22 @@
+﻿Build started 15/08/2016 15:30:11.
+     1>Project "D:\Projects\StatsTools\StatsTools.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\StatsTools.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         d:\Programs\VS2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>d:\projects\statstools\main.cpp(966): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+       Link:
+         d:\Programs\VS2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Projects\StatsTools\Debug\StatsTools.exe" /NOLOGO /LIBPATH:D:\Projects\StatsTools D:\Projects\StatsTools\libcurl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\StatsTools.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Projects\StatsTools\Debug\StatsTools.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Projects\StatsTools\Debug\StatsTools.lib" /MACHINE:X86 Debug\main.obj
+         LINK : D:\Projects\StatsTools\Debug\StatsTools.exe not found or not built by the last incremental link; performing full link
+         StatsTools.vcxproj -> D:\Projects\StatsTools\Debug\StatsTools.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\Projects\StatsTools\Debug\StatsTools.exe;#1" /manifest Debug\StatsTools.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Debug\StatsTools.unsuccessfulbuild".
+         Touching "Debug\StatsTools.lastbuildstate".
+     1>Done Building Project "D:\Projects\StatsTools\StatsTools.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.83

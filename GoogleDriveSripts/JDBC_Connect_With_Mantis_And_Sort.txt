@@ -1,0 +1,210 @@
+function myHigh2() {
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+ var i = 0;
+  
+  while (i < sheets.length) {   
+    
+   //'A1' = sheets[i].getName();
+    sheets[0].appendRow([sheets[i].getName()]);
+    sheets[0].getRange("B:B").getCell(i+1, 1).setValue([sheets[i].getRange("B:B").getCell(3,1).getValue()]);
+    i++;
+ }
+
+  var chart =  sheets[0].newChart()
+     .setChartType(Charts.ChartType.PIE)
+     .addRange(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Value").getRange("A1:B9"))
+     .setPosition(5, 5, 0, 0)
+     .build();
+
+  sheets[0].insertChart(chart);
+}
+
+function myChart(){
+
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  var chart =  sheets[0].newChart()
+     .setChartType(Charts.ChartType.PIE)
+     .addRange(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Value").getRange("A1:B9"))
+     .setPosition(5, 5, 0, 0)
+     .build();
+
+  sheets[0].insertChart(chart);
+}
+
+function myClear() {
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Test creation");
+ sheets.clear();
+  var charts = sheets.getCharts();
+  var i = 0;
+  while (i < charts.length)
+  {
+    sheets.removeChart(charts[i]);
+    i++;
+  }
+}
+
+/*
+function openDialog() {
+  var html = HtmlService.createHtmlOutputFromFile('Index')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
+      .showModalDialog(html, 'test');
+}
+*/
+
+
+function myChartRoll(){
+
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  var chart =  sheets[0].newChart()
+     .setChartType(Charts.ChartType.PIE)
+  .addRange(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Rolls").getRange("A2:A100"))
+     .setPosition(5, 5, 0, 0)
+     .build();
+
+  sheets[7].insertChart(chart);
+}
+
+/// DB MYSQL FULL CODE WORKING
+
+function connectToMySQLDB2() {
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestConnectMantis");
+ //sheets.clear();
+ // make the connection
+ var connection = Jdbc.getConnection("jdbc:mysql://ip:port/dbname", "user", "pass");
+ // perform the query
+ var SQLstatement = connection.createStatement();
+ // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ var testquery = "SELECT * FROM mantis_bug_table";
+  
+
+   var result = SQLstatement.executeQuery(testquery);
+
+ /*
+ while(result.next()) {
+ }*/
+ result.close();
+
+
+ // tidy up
+ SQLstatement.close();
+ connection.close();
+}
+
+
+
+function connectToMySQLDB3() {
+ var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestConnectMantis");
+ //sheets.clear();
+ // make the connection
+ var connection = Jdbc.getConnection('jdbc:mysql://ip:port/dbname', "newuser", "pass");
+
+ // perform the query
+ var SQLstatement = connection.createStatement();
+ // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ //var testquery = "SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table WHERE severity=" + ss.getRange('C28').getValue() + "";
+  
+        switch (ss.getRange('F1').getValue()) {
+          case "major":
+ var testquery = "SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table WHERE severity=60";
+            break;
+          case "minor":
+ var testquery = "SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table WHERE severity=50";
+            break;
+          case "crash":
+ var testquery = "SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table WHERE severity=70";
+            break;
+          case "block":
+ var testquery = "SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table WHERE severity=80";
+            break;
+          default:
+            testquery ="SELECT version,fixed_in_version,reproducibility,severity,summary FROM mantis_bug_table";
+            break;
+        }
+  /*
+ var cellclean = ss.getRange('A2');
+ var rowclean = 0;
+ while(rowclean < 26) {
+    for(var iclean=0; iclean<5; iclean++) {     // four fields per record
+            cellclean.offset(rowclean, iclean).setValue("");
+    }
+   rowclean++;
+ }*/
+  
+  
+  
+ if (ss.getRange('F1').getValue() != "") {
+   var result = SQLstatement.executeQuery(testquery);
+
+  
+ ss.getRange('A1').setValue("Version");
+ ss.getRange('B1').setValue("Fixed in Version");
+ ss.getRange('C1').setValue("Reproducibility");
+ ss.getRange('D1').setValue("Severity");
+ ss.getRange('E1').setValue("Summary");
+ var cell = ss.getRange('A2');
+
+ var row = 0;
+ while(result.next()) {
+    for(var i=0; i<5; i++) {     // four fields per record
+      if (i == "2") {
+        switch (result.getString(i+1)) {
+           case "90" : 
+            cell.offset(row, i).setValue("Unable to reproduce");
+            break;
+           case "10" : 
+            cell.offset(row, i).setValue("Always");
+            break;
+           case "30" : 
+            cell.offset(row, i).setValue("Sometimes");
+            break;
+           case "100" : 
+            cell.offset(row, i).setValue("N/A");
+            break;
+           case "50" : 
+            cell.offset(row, i).setValue("Random");
+            break;
+          default:
+            cell.offset(row, i).setValue("Unsupported reproducibility");
+            break;
+        }
+      }
+      else if (i == "3") {
+        switch (result.getString(i+1)) {
+           case "70" : 
+            cell.offset(row, i).setValue("Crash");
+            break;
+           case "60" : 
+            cell.offset(row, i).setValue("Major");
+            break;
+           case "80" : 
+            cell.offset(row, i).setValue("Block");
+            break;
+           case "40" : 
+            cell.offset(row, i).setValue("Tweak");
+            break;
+           case "50" : 
+            cell.offset(row, i).setValue("Minor");
+            break;
+          default:
+            cell.offset(row, i).setValue("Unsupported severity");
+            break;
+        }
+      }
+      else {
+        cell.offset(row, i).setValue(result.getString(i+1));
+      }
+    }
+    row++;
+ }
+ result.close();
+ }
+  else { ss.getRange('A1').setValue("Pas de champs dans F1");}
+
+
+ // tidy up
+ SQLstatement.close();
+ connection.close();
+}

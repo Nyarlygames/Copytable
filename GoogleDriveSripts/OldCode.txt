@@ -1,0 +1,2294 @@
+// -------------------------------------------------------------- Helpers from : https://gist.github.com/brucemcpherson/3358690
+function IsEmpty(v) {
+  return typeof(v) == "string" && v == Empty();
+}
+/**
+ * IsDate
+ * Returns whether item is a valid date
+ * @param {string} sDate item to check
+ * @return {boolean} true if item can be converted to a date
+ */
+function IsDate(sDate) {
+  var tryDate = new Date(sDate);
+  return (tryDate.toString() != "NaN" && tryDate != "Invalid Date") ;
+}
+/**
+ * IsNumeric
+ * Returns whether item is a valid number
+ * @param {string} s item to check
+ * @return {boolean} true if item can be converted to a number
+ */
+function IsNumeric(s) {
+  return !isNaN(parseFloat(s)) && isFinite(s);
+}
+
+
+
+// -------------------------------------------------------------- Search Auto function
+function SearchAuto(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+  var rangedb = ssdb.getRange(2, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+  var rangefilters = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+  var valuefilter = rangefilters.getValues();
+  var valuedb = rangedb.getValues();
+  var active = ss.getActiveRange();
+  var sstarget = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(active.offset(-1,0).getValue());
+  var target = sstarget.getRange(active.offset(-1,1).getValue());
+  var t_mode = active.offset(-1,2).getValue();
+  var cols = 0;
+  var foundlist = new Array(active.getHeight());
+  var filterlist = new Array(rangefilters.getWidth());
+  var colsfilter = 0;
+  var filtercount = 0;
+  var countFilternb = 0;
+  var tempFilter = new Array(rangefilters.getWidth());
+  var tempCol = 0;
+  var unique = 0;
+  
+  while ( cols < active.getWidth()) {
+    // populate filter is list
+    var activecell2 = active.getCell(1, (cols+1) );
+    
+    while (colsfilter < rangefilters.getWidth()) {
+      if (valuefilter[0][colsfilter] == activecell2.getValue()) {
+        filterlist[filtercount] = colsfilter;
+        filtercount++;
+      }
+      colsfilter ++;
+    }
+    colsfilter = 0;
+    cols++;
+  }
+  // get unique filter count
+  cols = 0;
+  while (cols < filtercount) {
+    while (tempCol < filtercount) {
+      if ((tempFilter[tempCol] == filterlist[cols]) && (cols != tempCol)) {
+        unique++;
+      }
+      tempCol++;
+    }
+    if (unique == 0) {
+      tempFilter[countFilternb] = filterlist[cols];
+      countFilternb++;
+    }
+    unique=0;
+    tempCol=0;
+    cols++;
+  }
+  
+  
+  cols = 0;
+  var rows = 1;
+  var foundcount = 0;
+  var foundperrow = 0;
+  // browse through all active rows
+  //  target.offset(-1,0).setValue("Count"); 
+  //  target.offset(-1,1).setValue("List");   
+  while (rows < active.getHeight()) { 
+    foundlist[rows] = "Mantis : ";
+    // browse through all db
+    for (var rowdb in valuedb) {
+      // check db value with current cell
+      while ( cols < active.getWidth()) {
+        var activecell = active.getCell(rows+1, cols+1).getValue();
+        if ((activecell != "") && (activecell != "All")) {
+          // ---------------------- Number ---------------------- //
+          if (IsNumeric(activecell)) {
+            if (valuedb[rowdb][filterlist[cols]] == activecell) {
+              foundcount++;
+            }              
+          }
+          else if (IsDate(activecell)) {
+            
+            // ---------------------- Date to handle ---------------------- //
+            /* var Datedb = new Date(valuedb[rowdb][filterlist[cols]]);
+            var Datebase = new Date(activecell2);
+            ss.getRange('A1').setValue(Datedb);
+            if (Date == activecell2) {
+            ss.getRange('A3').setValue("test");
+            }*/
+          }
+          // ---------------------- Text ---------------------- //
+          else if (valuedb[rowdb][filterlist[cols]].match(activecell)) {
+            foundcount++;
+          }
+        }
+        else if (activecell == "All"){
+          /*  // si case vide & col label est unique
+          while (duplicatecols < maxfoundperrow) {
+          if (active.getCell(1,
+          }*/
+          foundcount++;
+        }
+        cols++
+      }
+      // db item matches all filters
+      if (foundcount == countFilternb) {
+        foundperrow++;
+        foundlist[rows] += "\n" + valuedb[rowdb][0] + "	[" + valuedb[rowdb][13] + "]	" + valuedb[rowdb][1];
+      }
+      foundcount = 0;  
+      cols = 0;
+    }
+    // display results or empty string if no results
+    if (foundlist[rows] != "") {
+      target.offset(rows-1,0).setValue(foundperrow);
+      target.offset(rows-1,0).setHorizontalAlignment("center");
+      target.offset(rows-1,0).setVerticalAlignment("middle");
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setFontSize(8);
+        target.offset(rows-1,1).setValue(foundlist[rows]);    
+      }
+    }
+    else {
+      target.offset(rows-1,0).setValue("0"); 
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setValue("");
+      }
+    }
+    foundperrow = 0;
+    rows++;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// on cell change
+// prendre les x et y rows des inputs
+// afficher les resultats possibles | ou write
+// chercher en switch puis boucle sur row/cols
+// afficher proprement en dessous de chaque filtre
+
+function WriteTool() { // choose a range in sheet
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+/*
+function SearchTool( cellbegin, cellend ){ // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestSearch");
+   var valuebegin = ss.getRange('A1').getValues();
+  var rangebegin = ss.getRange(valuebegin); 
+  var valuesbegin = rangebegin.getValues(); // get starting cell or full stuff
+  var rangecells = ss.getRange(rangebegin.getRow(),rangebegin.getColumn(), rangebegin.getLastRow(),rangebegin.getLastColumn()); // range to begin to read filters
+  
+ var sstarget = SpreadsheetApp.getActiveSpreadsheet();
+  var valuetarget = ss.getRange('B1').getValues();
+  var rangetarget = sstarget.getRange(valuetarget); // get target cell or full stuff
+  var valuestarget = rangetarget.getValues();
+  var target = ss.getRange(rangetarget.getRow(),rangetarget.getColumn(), rangetarget.getLastRow(),rangetarget.getLastColumn()); // range to begin to read filters
+ // var target = sstarget.getRange(rangetarget.getRow(),rangetarget.getColumn(), rangetarget.getLastRow(),rangetarget.getLastColumn()); // range to begin to write results
+  
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var rangedb = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  
+  //if (rangecols.getNumColumns() > 0) {
+  //}
+  //if (rangecols.getNumRows() > 0) {
+  //  ss.getRange('F8').setValue("cols = " + rangecols.getNumRows());
+  //}
+  
+  var rows = 0;
+  var cols = 0;
+  while ((rangebegin.offset(rows, 0) != "") && (rows < rangebegin.getLastRow()-3)) {
+    while ((rangebegin.offset(0, cols) != "") && (cols < rangebegin.getLastColumn()-3)){
+      if (valuesbegin[rows][cols] != 0){
+     // rangetarget.offset(rows, cols).setValue(valuesbegin[rows][cols]);     
+        
+      }
+      //for (var rows in valuedb) {}
+      // if ((valuedb[rows][6] == filtre1) && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")))  {
+      cols++;
+    }
+    cols=0;
+    rows++;
+  }
+     //  if (valuedb[rows][9] == indexes[rowbase]) {       }
+  //  rangetarget.offset(0,0).setValue("cols = " + rangecells.getWidth());
+  //  rangetarget.offset(0,1).setValue("rows = " + rangecells.getNumRows());
+  //  rangetarget.offset(1,0).setValue("cols = " + rangebegin.getNumColumns());
+  //  rangetarget.offset(1,1).setValue("rows = " + rangebegin.getNumRows());
+
+  
+}*/
+
+
+function SearchTool2() { // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestHighAuto");
+ var cellbase = ss.getRange('D1');
+ var cellcount = ss.getRange('B2');
+  // clean la page
+ var cellclean = ss.getRange(1, 1,ss.getLastRow(),4);
+ cellbase.setValue("Cleaning");
+ cellclean.clear({contentsOnly: true});
+  var labelfilter1 = ss.getRange('G1').getValue();
+  var labelfilter2 = ss.getRange('I1').getValue();
+  var labelfilter3 = ss.getRange('K1').getValue();
+  var labelmod = ss.getRange('M1').getValue();
+  var labelproject = ss.getRange('O1').getValue();
+  
+  var filtre_base = "Category";//filtre_base
+  var filtre1 = ss.getRange(1,8).getValue();//repro
+  var filtre2 = ss.getRange(1,10).getValue();//severity
+  var filtre3 = ss.getRange(1,12).getValue();//status
+  var mod = ss.getRange(1,14).getValue();//mod 
+  var project = ss.getRange(1,16).getValue();//project
+  var textmajor = filtre2 + " list :  ";
+cellbase.setValue(cellbase.getValue() + "\n" +  "Selecting project");
+  switch (project) {
+    case "Mordheim":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMordheim");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMordheim!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMordheim!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "BFG":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbBFG");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbBFG!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbBFG!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "TTM":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTTM");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbTTM!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbTTM!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "BB2":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbBB2");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbBB2!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbBB2!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + + maxcat);
+      break;
+    case "SAF":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbSAF");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbSAF!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbSAF!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "FS15":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbFS15");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbFS15!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbFS15!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "TDF16":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTDF16");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbTDF16!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbTDF16!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "All Focus":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantisFocus");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantisFocus!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantisFocus!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "All Cyanide":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantisCyanide");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantisCyanide!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantisCyanide!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "Full":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantis!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantis!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    default:
+      break;
+  }
+  
+cellbase.setValue(cellbase.getValue() + "\n" +  "Setting variables");
+ var celldb = ssdb.getRange('A2');
+
+ var rowbase = 0;
+ var row = 2;
+ var rangedb = ssdb.getRange(row, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  cellbase.setValue(cellbase.getValue() + "\n" +  "Determining max unique filtre1");
+ var rangecat = ss.getRange(2,1,ss.getLastRow() ,ss.getLastColumn()); // l'affiche
+cellbase.setValue(cellbase.getValue() + "\n" +  "Chaos is at work, please be patient...");
+ var valuecat = rangecat.getValues();
+ var indexes = new Array(maxcat); // all category
+  var majorcount = 0;
+  var majortotal = 0;
+ var catcount = 0;
+ var catotal = 0;
+  var boolrow = -1;
+  var catuniques=0;
+ var majorlist = new Array(maxcat); // all categor
+  // init tableau catégorie
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Parsing categories");
+   for (var id in valuecat) {
+     if (rowbase < maxcat) {
+     indexes[rowbase] = valuecat[id][0];
+         majorlist[rowbase] = "";
+     
+     // loop pour count
+     for (var rows in valuedb) {
+       
+       if (valuedb[rows][9] == indexes[rowbase]) {
+         catcount++;
+         catotal++;
+         
+         switch (filtre3) {
+           case "non-resolved":
+                      switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1) && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce") && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged"))) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+             if ((valuedb[rows][7]==filtre3) && (valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }}
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+                          
+             break;
+         }
+             break;
+           case "All":
+                  switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce"))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+         }
+             break;
+           default:         switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce") && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+             if (valuedb[rows][7]==filtre3) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }}
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+         }
+             break;
+
+         }
+       }
+ //        cellcount.offset(id,1).setValue(cellcount.offset(id,1).getValue() + valuedb[rows][5]);
+      //       cellbase.setValue("Adding item to filtre2 list");
+      // majorlist[rowbase] = texttemp;
+       switch (mod) {
+         case "nolist" :
+           if (majorcount > 0) {
+         cellcount.offset(id,2).setValue("Ko");
+           }
+           else {
+         cellcount.offset(id,2).setValue("Pass");
+           }   
+           break;
+         case "full":
+           if (majorcount > 0) {
+         cellcount.offset(id,2).setValue(textmajor + majorlist[rowbase]);
+           }
+           else {
+         cellcount.offset(id,2).setValue("Pass");
+           }          
+           break
+       }
+      // textmajor = "";
+       
+     }
+     cellcount.offset(id,0).setValue(catcount); //nb par catégorie
+     cellcount.offset(id,1).setValue(majorcount); // nb major count par catégory
+      /*debug*/
+   //cellcount.offset(id,1).setValue(indexes[rowbase]);
+    // cellcount.offset(id,2).setValue("rowbase" + rowbase + " id " + id + "catcount : " + catcount);
+     
+     // on affiche le compte à côté de chaque catégorie
+     catcount = 0;
+       if (majorcount>0)
+             cellcount.offset(id,2).setFontSize(8);
+       else
+             cellcount.offset(id,2).setFontSize(10);
+     majorcount = 0;
+     rowbase++; 
+     }
+   }
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Displaying totals");
+  ss.getRange(1,3).setValue("Total issues found " +majortotal);
+  ss.getRange('B1').setValue("Total issues : " + catotal);
+  ss.getRange('F1').setValue("Case tampon");
+  
+  cellbase.setValue(labelproject+ " : " + project + "\n" + labelfilter2+ " : " + filtre2 + "\n"+ labelfilter1 + " : " + filtre1+"\n"+ labelfilter3 + " : " + filtre3+"\n"+ labelmod + " : " + mod);              
+  cellbase.setFontSize(8);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------- Show prompt
+/*function onOpen() {
+  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
+      .createMenu('Custom Menu')
+      .addItem('Show prompt', 'showPrompt')
+      .addToUi();
+}*/
+
+// -------------------------------------------------------------- Helpers from : https://gist.github.com/brucemcpherson/3358690
+function IsEmpty(v) {
+  return typeof(v) == "string" && v == Empty();
+}
+/**
+ * IsDate
+ * Returns whether item is a valid date
+ * @param {string} sDate item to check
+ * @return {boolean} true if item can be converted to a date
+ */
+function IsDate(sDate) {
+  var tryDate = new Date(sDate);
+  return (tryDate.toString() != "NaN" && tryDate != "Invalid Date") ;
+}
+/**
+ * IsNumeric
+ * Returns whether item is a valid number
+ * @param {string} s item to check
+ * @return {boolean} true if item can be converted to a number
+ */
+function IsNumeric(s) {
+  return !isNaN(parseFloat(s)) && isFinite(s);
+}
+
+// -------------------------------------------------------------- Show all category + data validation in a cell | TODO
+function ShowAllCat(){
+  /*var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var active = ss.getActiveRange();
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTTM");
+ var listcat = active.offset(1,0).setFormula("=UNIQUE(dbTTM!"+ "J" + "2:" + "J" + ")"); // compile la liste des catégories
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(listcat).build();
+ active.offset(1,1)..setDataValidation(rule);*/
+}
+
+
+// -------------------------------------------------------------- Search Auto function
+function SearchAuto(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+  var rangedb = ssdb.getRange(2, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+  var rangefilters = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+  var valuefilter = rangefilters.getValues();
+  var valuedb = rangedb.getValues();
+  var active = ss.getActiveRange();
+  var sstarget = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(active.offset(-1,0).getValue());
+  var target = sstarget.getRange(active.offset(-1,1).getValue());
+  var t_mode = active.offset(-1,2).getValue();
+  var cols = 0;
+  var foundlist = new Array(active.getHeight());
+  var filterlist = new Array(rangefilters.getWidth());
+  var colsfilter = 0;
+  var filtercount = 0;
+  var countFilternb = 0;
+  var tempFilter = new Array(rangefilters.getWidth());
+  var tempCol = 0;
+  var unique = 0;
+  
+  while ( cols < active.getWidth()) {
+    // populate filter is list
+    var activecell2 = active.getCell(1, (cols+1) );
+    
+    while (colsfilter < rangefilters.getWidth()) {
+      if (valuefilter[0][colsfilter] == activecell2.getValue()) {
+        filterlist[filtercount] = colsfilter;
+        filtercount++;
+      }
+      colsfilter ++;
+    }
+    colsfilter = 0;
+    cols++;
+  }
+  // get unique filter count
+  cols = 0;
+  while (cols < filtercount) {
+    while (tempCol < filtercount) {
+      if ((tempFilter[tempCol] == filterlist[cols]) && (cols != tempCol)) {
+        unique++;
+      }
+      tempCol++;
+    }
+    if (unique == 0) {
+      tempFilter[countFilternb] = filterlist[cols];
+      countFilternb++;
+    }
+    unique=0;
+    tempCol=0;
+    cols++;
+  }
+  
+  
+  cols = 0;
+  var rows = 1;
+  var foundcount = 0;
+  var foundperrow = 0;
+  // browse through all active rows
+  //  target.offset(-1,0).setValue("Count"); 
+  //  target.offset(-1,1).setValue("List");   
+  while (rows < active.getHeight()) { 
+    foundlist[rows] = "Mantis : ";
+    // browse through all db
+    for (var rowdb in valuedb) {
+      // check db value with current cell
+      while ( cols < active.getWidth()) {
+        var activecell = active.getCell(rows+1, cols+1).getValue();
+        if ((activecell != "") && (activecell != "All")) {
+          // ---------------------- Number ---------------------- //
+          if (IsNumeric(activecell)) {
+            if (valuedb[rowdb][filterlist[cols]] == activecell) {
+              foundcount++;
+            }              
+          }
+          else if (IsDate(activecell)) {
+            
+            // ---------------------- Date to handle ---------------------- //
+            /* var Datedb = new Date(valuedb[rowdb][filterlist[cols]]);
+            var Datebase = new Date(activecell2);
+            ss.getRange('A1').setValue(Datedb);
+            if (Date == activecell2) {
+            ss.getRange('A3').setValue("test");
+            }*/
+          }
+          // ---------------------- Text ---------------------- //
+          else if (valuedb[rowdb][filterlist[cols]].match(activecell)) {
+            foundcount++;
+          }
+        }
+        else if (activecell == "All"){
+          /*  // si case vide & col label est unique
+          while (duplicatecols < maxfoundperrow) {
+          if (active.getCell(1,
+          }*/
+          foundcount++;
+        }
+        cols++
+      }
+      // db item matches all filters
+      if (foundcount == countFilternb) {
+        foundperrow++;
+        foundlist[rows] += "\n" + valuedb[rowdb][0] + "	[" + valuedb[rowdb][5] + "]	" + valuedb[rowdb][19];
+      }
+      foundcount = 0;  
+      cols = 0;
+    }
+    // display results or empty string if no results
+    if (foundlist[rows] != "") {
+      target.offset(rows-1,0).setValue(foundperrow);
+      target.offset(rows-1,0).setHorizontalAlignment("center");
+      target.offset(rows-1,0).setVerticalAlignment("middle");
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setFontSize(8);
+        target.offset(rows-1,1).setValue(foundlist[rows]);    
+      }
+    }
+    else {
+      target.offset(rows-1,0).setValue("0"); 
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setValue("");
+      }
+    }
+    foundperrow = 0;
+    rows++;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------- Search function
+function Search(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var prom_sheet = ui.prompt(
+      'Feuille cible ?',
+      ui.ButtonSet.OK_CANCEL);
+  var but_sheet = prom_sheet.getSelectedButton();
+  var t_sheet = prom_sheet.getResponseText();
+  if (but_sheet == ui.Button.OK) {
+    var sstarget = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(t_sheet);
+    var prom_target = ui.prompt(
+      'Cellule de début des resultats ?',
+      ui.ButtonSet.OK_CANCEL);
+    var but_target = prom_target.getSelectedButton();
+    var t_target = prom_target.getResponseText();
+    if (but_target == ui.Button.OK) {
+      var prom_mode = ui.prompt(
+        'Ecrire "Full" pour afficher la liste',
+        ui.ButtonSet.OK_CANCEL);
+      var but_mode = prom_mode.getSelectedButton();
+      var t_mode = prom_mode.getResponseText();
+      if (but_mode == ui.Button.OK) {
+        var target = sstarget.getRange(t_target);
+        
+        var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+        var rangedb = ssdb.getRange(2, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+        var rangefilters = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+        var valuefilter = rangefilters.getValues();
+        var valuedb = rangedb.getValues();
+        var active = ss.getActiveRange();
+        var cols = 0;
+        var foundlist = new Array(active.getHeight());
+        var filterlist = new Array(rangefilters.getWidth());
+        var colsfilter = 0;
+        var filtercount = 0;
+        var countFilternb = 0;
+        var tempFilter = new Array(rangefilters.getWidth());
+        var tempCol = 0;
+        var unique = 0;
+        
+        while ( cols < active.getWidth()) {
+          // populate filter is list
+          var activecell2 = active.getCell(1, (cols+1) );
+          
+          while (colsfilter < rangefilters.getWidth()) {
+            if (valuefilter[0][colsfilter] == activecell2.getValue()) {
+              filterlist[filtercount] = colsfilter;
+              filtercount++;
+            }
+            colsfilter ++;
+          }
+          colsfilter = 0;
+          cols++;
+        }
+        // get unique filter count
+        cols = 0;
+        while (cols < filtercount) {
+          while (tempCol < filtercount) {
+            if ((tempFilter[tempCol] == filterlist[cols]) && (cols != tempCol)) {
+              unique++;
+            }
+            tempCol++;
+          }
+          if (unique == 0) {
+            tempFilter[countFilternb] = filterlist[cols];
+            countFilternb++;
+          }
+          unique=0;
+          tempCol=0;
+          cols++;
+        }
+        
+        
+        cols = 0;
+        var rows = 1;
+        var foundcount = 0;
+        var foundperrow = 0;
+        // browse through all active rows
+        //  target.offset(-1,0).setValue("Count"); 
+        //  target.offset(-1,1).setValue("List");   
+        while (rows < active.getHeight()) { 
+          foundlist[rows] = "Mantis : ";
+          // browse through all db
+          for (var rowdb in valuedb) {
+            // check db value with current cell
+            while ( cols < active.getWidth()) {
+              var activecell = active.getCell(rows+1, cols+1).getValue();
+              if ((activecell != "") && (activecell != "All")) {
+                // ---------------------- Number ---------------------- //
+                if (IsNumeric(activecell)) {
+                  if (valuedb[rowdb][filterlist[cols]] == activecell) {
+                    foundcount++;
+                  }              
+                }
+                else if (IsDate(activecell)) {
+                  
+                  // ---------------------- Date to handle ---------------------- //
+                  /* var Datedb = new Date(valuedb[rowdb][filterlist[cols]]);
+                  var Datebase = new Date(activecell2);
+                  ss.getRange('A1').setValue(Datedb);
+                  if (Date == activecell2) {
+                  ss.getRange('A3').setValue("test");
+                  }*/
+                }
+                // ---------------------- Text ---------------------- //
+                else if (valuedb[rowdb][filterlist[cols]].match(activecell)) {
+                  foundcount++;
+                }
+              }
+              else if (activecell == "All"){
+                /*  // si case vide & col label est unique
+                while (duplicatecols < maxfoundperrow) {
+                if (active.getCell(1,
+                }*/
+                foundcount++;
+              }
+              cols++
+            }
+            // db item matches all filters
+            if (foundcount == countFilternb) {
+              foundperrow++;
+              foundlist[rows] += "\n" + valuedb[rowdb][0] + "	[" + valuedb[rowdb][5] + "]	" + valuedb[rowdb][19];
+            }
+            foundcount = 0;  
+            cols = 0;
+          }
+          // display results or empty string if no results
+          if (foundlist[rows] != "") {
+            target.offset(rows-1,0).setValue(foundperrow);
+            target.offset(rows-1,0).setHorizontalAlignment("center");
+            target.offset(rows-1,0).setVerticalAlignment("middle");
+            if (t_mode == "Full") {
+              target.offset(rows-1,1).setFontSize(8);
+              target.offset(rows-1,1).setValue(foundlist[rows]);    
+            }
+          }
+          else {
+            target.offset(rows-1,0).setValue("0"); 
+            if (t_mode == "Full") {
+              target.offset(rows-1,1).setValue("");
+            }
+          }
+          foundperrow = 0;
+          rows++;
+        }
+      } else if (prom_mode == ui.Button.CANCEL) {
+        ui.alert('Canceled');
+      } else if (prom_mode == ui.Button.CLOSE) {
+        ui.alert('Closed');
+      }
+      // cancelled prompt before giving info
+  } else if (prom_target == ui.Button.CANCEL) {
+    ui.alert('Canceled');
+  } else if (prom_target == ui.Button.CLOSE) {
+    ui.alert('Closed');
+  }
+} else if (prom_sheet == ui.Button.CANCEL) {
+  ui.alert('Canceled');
+} else if (prom_sheet == ui.Button.CLOSE) {
+  ui.alert('Closed');
+}
+}
+
+
+function showPrompt() {
+/*  var ui = SpreadsheetApp.getUi(); // Same variations.
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var rangedb = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  
+     //  if (valuedb[rows][9] == indexes[rowbase]) {       }
+  var prom_target = ui.prompt(
+      'Target range ?',
+      ui.ButtonSet.OK_CANCEL);
+
+           var testlog = ss.getRange('A17');
+  //target range
+  var but_target = prom_target.getSelectedButton();
+  var t_target = prom_target.getResponseText();
+  if (but_target == ui.Button.OK) {
+    var target = ss.getRange(t_target);
+    
+    //tags
+    
+     var prom_tags = ui.prompt(
+       'Search tags, separate with space : " "',
+      ui.ButtonSet.OK_CANCEL);
+  // Process the user's response.
+    var but_tags = prom_tags.getSelectedButton();
+    var tags = prom_tags.getResponseText();
+    
+    if (but_tags == ui.Button.OK) {
+      // recherche 
+      var rows = 0;
+      var cols = 0;
+      
+     while (rows < rangedb.getLastRow()) {
+       while ( cols < rangedb.getLastColumn()-1) {
+         var singleton = rangedb.offset(rows, cols).getValue();
+         if (singleton == tags ) {
+           ss.getRange('B2').setValue("found tag");
+           
+         }
+         cols++;
+       }
+       cols=0;
+       rows++;
+     }
+    
+      
+          ss.getRange('D14').setValue("loldélire");*/
+   var ui = SpreadsheetApp.getUi(); // Same variations.
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ var cellbase = ss.getRange('D1');
+ var cellcount = ss.getRange('B2');
+  // clean la page
+ var cellclean = ss.getRange(1, 1,ss.getLastRow(),4);
+ cellbase.setValue("Cleaning");
+ cellclean.clear({contentsOnly: true});
+  var labelfilter1 = ss.getRange('G1').getValue();
+  var labelfilter2 = ss.getRange('I1').getValue();
+  var labelfilter3 = ss.getRange('K1').getValue();
+  var labelmod = ss.getRange('M1').getValue();
+  var labelproject = ss.getRange('O1').getValue();
+  
+  var filtre_base = "Category";//filtre_base
+  var filtre1 = ss.getRange(1,8).getValue();//repro
+  var filtre2 = ss.getRange(1,10).getValue();//severity
+  var filtre3 = ss.getRange(1,12).getValue();//status
+  var mod = ss.getRange(1,14).getValue();//mod 
+  var project = ss.getRange(1,16).getValue();//project
+  var textmajor = filtre2 + " list :  ";
+cellbase.setValue(cellbase.getValue() + "\n" +  "Selecting project");
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantis!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantis!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+  
+cellbase.setValue(cellbase.getValue() + "\n" +  "Setting variables");
+ var celldb = ssdb.getRange('A2');
+
+ var rowbase = 0;
+ var row = 2;
+ var rangedb = ssdb.getRange(row, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  cellbase.setValue(cellbase.getValue() + "\n" +  "Determining max unique filtre1");
+ var rangecat = ss.getRange(2,1,ss.getLastRow() ,ss.getLastColumn()); // l'affiche
+cellbase.setValue(cellbase.getValue() + "\n" +  "Chaos is at work, please be patient...");
+ var valuecat = rangecat.getValues();
+ var indexes = new Array(maxcat); // all category
+  var majorcount = 0;
+  var majortotal = 0;
+ var catcount = 0;
+ var catotal = 0;
+  var boolrow = -1;
+  var catuniques=0;
+ var majorlist = new Array(maxcat); // all categor
+  // init tableau catégorie
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Parsing categories");
+   for (var id in valuecat) {
+     if (rowbase < maxcat) {
+     indexes[rowbase] = valuecat[id][0];
+         majorlist[rowbase] = "";
+     
+     // loop pour count
+     for (var rows in valuedb) {
+       
+       if (valuedb[rows][9] == indexes[rowbase]) {
+         catcount++;
+         catotal++;
+       }
+       
+     }
+     cellcount.offset(id,0).setValue(catcount); //nb par catégorie
+     cellcount.offset(id,1).setValue(majorcount); // nb major count par catégory
+     catcount = 0;
+       if (majorcount>0)
+             cellcount.offset(id,2).setFontSize(8);
+       else
+             cellcount.offset(id,2).setFontSize(10);
+     majorcount = 0;
+     rowbase++; 
+     }
+   }
+  
+  cellbase.setValue(labelproject+ " : " + project + "\n" + labelfilter2+ " : " + filtre2 + "\n"+ labelfilter1 + " : " + filtre1+"\n"+ labelfilter3 + " : " + filtre3+"\n"+ labelmod + " : " + mod);              
+  cellbase.setFontSize(8);
+  
+    
+    /*
+   // ui.alert('Sheet ' + text + '.');
+  } else if (prom_target == ui.Button.CANCEL) {
+          ss.getRange('D14').setValue("loldélire");
+    // User clicked "Cancel".
+    ui.alert('Canceled');
+  } else if (prom_target == ui.Button.CLOSE) {
+          ss.getRange('D14').setValue("loldélire");
+    // User clicked X in the title bar.
+    ui.alert('Closed');
+  }*/
+}
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+function SearchTool( cellbegin, cellend ){ // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestSearch");
+   var valuebegin = ss.getRange('A1').getValues();
+  var rangebegin = ss.getRange(valuebegin); 
+  var valuesbegin = rangebegin.getValues(); // get starting cell or full stuff
+  var rangecells = ss.getRange(rangebegin.getRow(),rangebegin.getColumn(), rangebegin.getLastRow(),rangebegin.getLastColumn()); // range to begin to read filters
+  
+ var sstarget = SpreadsheetApp.getActiveSpreadsheet();
+  var valuetarget = ss.getRange('B1').getValues();
+  var rangetarget = sstarget.getRange(valuetarget); // get target cell or full stuff
+  var valuestarget = rangetarget.getValues();
+  var target = ss.getRange(rangetarget.getRow(),rangetarget.getColumn(), rangetarget.getLastRow(),rangetarget.getLastColumn()); // range to begin to read filters
+ // var target = sstarget.getRange(rangetarget.getRow(),rangetarget.getColumn(), rangetarget.getLastRow(),rangetarget.getLastColumn()); // range to begin to write results
+  
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var rangedb = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  /*
+  if (rangecols.getNumColumns() > 0) {
+  }
+  if (rangecols.getNumRows() > 0) {
+    ss.getRange('F8').setValue("cols = " + rangecols.getNumRows());
+  }*/
+  
+  var rows = 0;
+  var cols = 0;
+  while ((rangebegin.offset(rows, 0) != "") && (rows < rangebegin.getLastRow()-3)) {
+    while ((rangebegin.offset(0, cols) != "") && (cols < rangebegin.getLastColumn()-3)){
+      if (valuesbegin[rows][cols] != 0){
+     // rangetarget.offset(rows, cols).setValue(valuesbegin[rows][cols]);     
+        
+      }
+      //for (var rows in valuedb) {}
+      // if ((valuedb[rows][6] == filtre1) && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")))  {
+      cols++;
+    }
+    cols=0;
+    rows++;
+  }
+     //  if (valuedb[rows][9] == indexes[rowbase]) {       }
+  //  rangetarget.offset(0,0).setValue("cols = " + rangecells.getWidth());
+  //  rangetarget.offset(0,1).setValue("rows = " + rangecells.getNumRows());
+  //  rangetarget.offset(1,0).setValue("cols = " + rangebegin.getNumColumns());
+  //  rangetarget.offset(1,1).setValue("rows = " + rangebegin.getNumRows());
+
+  
+}
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+
+function SearchTool2() { // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ var cellbase = ss.getRange('D1');
+ var cellcount = ss.getRange('B2');
+  // clean la page
+ var cellclean = ss.getRange(1, 1,ss.getLastRow(),4);
+ cellbase.setValue("Cleaning");
+ cellclean.clear({contentsOnly: true});
+  var labelfilter1 = ss.getRange('G1').getValue();
+  var labelfilter2 = ss.getRange('I1').getValue();
+  var labelfilter3 = ss.getRange('K1').getValue();
+  var labelmod = ss.getRange('M1').getValue();
+  var labelproject = ss.getRange('O1').getValue();
+  
+  var filtre_base = "Category";//filtre_base
+  var filtre1 = ss.getRange(1,8).getValue();//repro
+  var filtre2 = ss.getRange(1,10).getValue();//severity
+  var filtre3 = ss.getRange(1,12).getValue();//status
+  var mod = ss.getRange(1,14).getValue();//mod 
+  var project = ss.getRange(1,16).getValue();//project
+  var textmajor = filtre2 + " list :  ";
+cellbase.setValue(cellbase.getValue() + "\n" +  "Selecting project");
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantis!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantis!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+  
+cellbase.setValue(cellbase.getValue() + "\n" +  "Setting variables");
+ var celldb = ssdb.getRange('A2');
+
+ var rowbase = 0;
+ var row = 2;
+ var rangedb = ssdb.getRange(row, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  cellbase.setValue(cellbase.getValue() + "\n" +  "Determining max unique filtre1");
+ var rangecat = ss.getRange(2,1,ss.getLastRow() ,ss.getLastColumn()); // l'affiche
+cellbase.setValue(cellbase.getValue() + "\n" +  "Chaos is at work, please be patient...");
+ var valuecat = rangecat.getValues();
+ var indexes = new Array(maxcat); // all category
+  var majorcount = 0;
+  var majortotal = 0;
+ var catcount = 0;
+ var catotal = 0;
+  var boolrow = -1;
+  var catuniques=0;
+ var majorlist = new Array(maxcat); // all categor
+  // init tableau catégorie
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Parsing categories");
+   for (var id in valuecat) {
+     if (rowbase < maxcat) {
+     indexes[rowbase] = valuecat[id][0];
+         majorlist[rowbase] = "";
+     
+     // loop pour count
+     for (var rows in valuedb) {
+       
+       if (valuedb[rows][9] == indexes[rowbase]) {
+         catcount++;
+         catotal++;
+       }
+       
+     }
+     cellcount.offset(id,0).setValue(catcount); //nb par catégorie
+     cellcount.offset(id,1).setValue(majorcount); // nb major count par catégory
+     catcount = 0;
+       if (majorcount>0)
+             cellcount.offset(id,2).setFontSize(8);
+       else
+             cellcount.offset(id,2).setFontSize(10);
+     majorcount = 0;
+     rowbase++; 
+     }
+   }
+  
+  cellbase.setValue(labelproject+ " : " + project + "\n" + labelfilter2+ " : " + filtre2 + "\n"+ labelfilter1 + " : " + filtre1+"\n"+ labelfilter3 + " : " + filtre3+"\n"+ labelmod + " : " + mod);              
+  cellbase.setFontSize(8);
+}
+
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+ function doGet2() {
+   var app = UiApp.createApplication();
+   var handler = app.createServerHandler("change");
+   var check = app.createCheckBox("click me").addValueChangeHandler(handler);
+   app.add(check);
+   return app;
+ }
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+ function change() {
+   var app = UiApp.getActiveApplication();
+   app.add(app.createLabel("The value changed!"));
+   return app;
+ }
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+function doGet() {
+  var app = UiApp.createApplication();
+
+  // Create input boxes and button
+  var textBoxA = app.createTextBox().setId('textBoxA').setName('textBoxA');
+  var textBoxB = app.createTextBox().setId('textBoxB').setName('textBoxB');
+  var addButton = app.createButton("Add");
+
+  // Create a handler to call the adding function
+  // Two validations are added to this handler so that it will
+  // only invoke 'add' if both textBoxA and textBoxB contain
+  // numbers
+  var handler =
+    app.createServerClickHandler('add').validateNumber(textBoxA).validateNumber(
+      textBoxB).addCallbackElement(textBoxA).addCallbackElement(textBoxB);
+
+  addButton.addClickHandler(handler);
+
+  app.add(textBoxA);
+  app.add(textBoxB);
+  app.add(addButton);
+  return app;
+}
+
+// -------------------------------------------------------------- Search Tool tests (OLD)
+function add(e) {
+  var app = UiApp.getActiveApplication();
+  var result =
+    parseFloat(e.parameter.textBoxA) + parseFloat(e.parameter.textBoxB);
+  var newResultLabel = app.createLabel("Result is: " + result);
+  app.add(newResultLabel);
+  return app;
+}
+
+// -------------------------------------------------------------- Search Auto function TTM
+function SearchAutoExample(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTTM");
+  var rangedb = ssdb.getRange(2, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+  var rangefilters = ssdb.getRange(1, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+  var valuefilter = rangefilters.getValues();
+  var valuedb = rangedb.getValues();
+  var active = ss.getActiveRange();
+  var sstarget = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(active.offset(-1,0).getValue());
+  var target = sstarget.getRange(active.offset(-1,1).getValue());
+  var t_mode = active.offset(-1,2).getValue();
+  var cols = 0;
+  var foundlist = new Array(active.getHeight());
+  var filterlist = new Array(rangefilters.getWidth());
+  var colsfilter = 0;
+  var filtercount = 0;
+  var countFilternb = 0;
+  var tempFilter = new Array(rangefilters.getWidth());
+  var tempCol = 0;
+  var unique = 0;
+  
+  while ( cols < active.getWidth()) {
+    // populate filter is list
+    var activecell2 = active.getCell(1, (cols+1) );
+    
+    while (colsfilter < rangefilters.getWidth()) {
+      if (valuefilter[0][colsfilter] == activecell2.getValue()) {
+        filterlist[filtercount] = colsfilter;
+        filtercount++;
+      }
+      colsfilter ++;
+    }
+    colsfilter = 0;
+    cols++;
+  }
+  // get unique filter count
+  cols = 0;
+  while (cols < filtercount) {
+    while (tempCol < filtercount) {
+      if ((tempFilter[tempCol] == filterlist[cols]) && (cols != tempCol)) {
+        unique++;
+      }
+      tempCol++;
+    }
+    if (unique == 0) {
+      tempFilter[countFilternb] = filterlist[cols];
+      countFilternb++;
+    }
+    unique=0;
+    tempCol=0;
+    cols++;
+  }
+  
+  
+  cols = 0;
+  var rows = 1;
+  var foundcount = 0;
+  var foundperrow = 0;
+  // browse through all active rows
+  //  target.offset(-1,0).setValue("Count"); 
+  //  target.offset(-1,1).setValue("List");   
+  while (rows < active.getHeight()) { 
+    foundlist[rows] = "Mantis : ";
+    // browse through all db
+    for (var rowdb in valuedb) {
+      // check db value with current cell
+      while ( cols < active.getWidth()) {
+        var activecell = active.getCell(rows+1, cols+1).getValue();
+        if ((activecell != "") && (activecell != "All")) {
+          // ---------------------- Number ---------------------- //
+          if (IsNumeric(activecell)) {
+            if (valuedb[rowdb][filterlist[cols]] == activecell) {
+              foundcount++;
+            }              
+          }
+          else if (IsDate(activecell)) {
+            
+            // ---------------------- Date to handle ---------------------- //
+            /* var Datedb = new Date(valuedb[rowdb][filterlist[cols]]);
+            var Datebase = new Date(activecell2);
+            ss.getRange('A1').setValue(Datedb);
+            if (Date == activecell2) {
+            ss.getRange('A3').setValue("test");
+            }*/
+          }
+          // ---------------------- Text ---------------------- //
+          else if (valuedb[rowdb][filterlist[cols]].match(activecell)) {
+            foundcount++;
+          }
+        }
+        else if (activecell == "All"){
+          /*  // si case vide & col label est unique
+          while (duplicatecols < maxfoundperrow) {
+          if (active.getCell(1,
+          }*/
+          foundcount++;
+        }
+        cols++
+      }
+      // db item matches all filters
+      if (foundcount == countFilternb) {
+        foundperrow++;
+        foundlist[rows] += "\n" + valuedb[rowdb][0] + "	[" + valuedb[rowdb][5] + "]	" + valuedb[rowdb][19];
+      }
+      foundcount = 0;  
+      cols = 0;
+    }
+    // display results or empty string if no results
+    if (foundlist[rows] != "") {
+      target.offset(rows-1,0).setValue(foundperrow);
+      target.offset(rows-1,0).setHorizontalAlignment("center");
+      target.offset(rows-1,0).setVerticalAlignment("middle");
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setFontSize(8);
+        target.offset(rows-1,1).setValue(foundlist[rows]);    
+      }
+    }
+    else {
+      target.offset(rows-1,0).setValue("0"); 
+      if (t_mode == "Full") {
+        target.offset(rows-1,1).setValue("");
+      }
+    }
+    foundperrow = 0;
+    rows++;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------------------------------------------------ Get graph data -------------------------------------//
+function myHisto() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rangeresults = ss.getRange('A2');
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("HistoMantis");
+  var rangehisto = sshisto.getRange(2, 1,sshisto.getLastRow(),sshisto.getLastColumn());
+  var valuehisto = rangehisto.getValues();
+  var foundclosed = 0;
+  var foundopen = 0;
+  var foundresolved = 0;
+  var foundate = 0;
+  var uniquedate = new Array(rangehisto.getWidth());
+  var newarr = new Array(rangehisto.getWidth());
+  var closearr = new Array(rangehisto.getWidth());
+  var resolvedarr = new Array(rangehisto.getWidth());
+  
+  
+  
+  var isunique = 0;
+  for (var fields in valuehisto) {
+    
+    if (valuehisto[fields][4].match("=> closed")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          closearr[knowndate]++;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        closearr[foundate] = 1;
+        newarr[foundate] = 0;
+        resolvedarr[foundate] = 0;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    
+    if (valuehisto[fields][3].match("New Issue")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          newarr[knowndate]++;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        newarr[foundate] = 1;
+        closearr[foundate] = 0;
+        resolvedarr[foundate] = 0;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    if (valuehisto[fields][4].match("=> resolved")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          resolvedarr[knowndate]++;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        resolvedarr[foundate] = 1;
+        closearr[foundate] = 0;
+        newarr[foundate] = 0;
+        foundate++;
+      }
+      isunique = 0;
+    }
+  }
+  
+  for (var display in uniquedate) {
+    rangeresults.offset(display,1).setValue(uniquedate[display]);
+    rangeresults.offset(display,2).setValue(closearr[display]);
+    rangeresults.offset(display,3).setValue(newarr[display]);
+    rangeresults.offset(display,4).setValue(resolvedarr[display]);
+  }
+}
+
+//-------------------------------------------------------------------------------- ALL STATS PER DAY -----------------------------------//
+function myHisto2() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rangeresults = ss.getRange('A2');
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("HistoMantis");
+  var rangehisto = sshisto.getRange(2, 1,sshisto.getLastRow(),sshisto.getLastColumn());
+  var valuehisto = rangehisto.getValues();
+  var foundclosed = 0;
+  var foundopen = 0;
+  var foundresolved = 0;
+  var foundate = 0;
+  var uniquedate = new Array(rangehisto.getWidth());
+  var newarr = new Array(rangehisto.getWidth());
+  var closearr = new Array(rangehisto.getWidth());
+  var resolvedarr = new Array(rangehisto.getWidth());
+  
+  
+  
+  var isunique = 0;
+  for (var fields in valuehisto) {
+    // ------------------------ CLOSED ------------------------ //
+    if (valuehisto[fields][4].match("=> closed")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          foundclosed++;
+          foundopen--;
+          closearr[knowndate] = foundclosed;
+          newarr[knowndate] = foundopen;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        foundclosed++;
+          foundopen--;
+        closearr[foundate] = foundclosed;
+       newarr[foundate] = foundopen;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    
+    
+    // ------------------------ NEW ------------------------ //
+    if (valuehisto[fields][3].match("New Issue")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          foundopen++;
+          newarr[knowndate] = foundopen;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        foundopen++;
+        newarr[foundate] = foundopen;
+        closearr[foundate] = foundclosed;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    
+    // ------------------------ REOPENED ------------------------ //
+    if (valuehisto[fields][4].match("closed =>")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          foundopen++;
+          foundclosed--;
+          closearr[knowndate] = foundclosed;
+          newarr[knowndate] = foundopen;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        foundopen++;
+          foundclosed--;
+        closearr[foundate] = foundclosed;
+        newarr[foundate] = foundopen;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    /*
+    // ------------------------ RESOLVED ------------------------ //
+    if (valuehisto[fields][4].match("=> resolved")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          foundresolved++;
+          resolvedarr[knowndate] = foundresolved;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        foundresolved++;
+        resolvedarr[foundate] = foundresolved;
+        closearr[foundate] = foundclosed;
+        newarr[foundate] = foundopen;
+        foundate++;
+      }
+      isunique = 0;
+    }
+    if (valuehisto[fields][4].match("resolved =>")){
+      for (var knowndate in uniquedate) {
+        if (valuehisto[fields][1].valueOf() == uniquedate[knowndate].valueOf()) {
+          foundresolved--;
+          resolvedarr[knowndate] = foundresolved;
+          isunique++;
+        }
+      }
+      if (isunique == 0) {
+        uniquedate[foundate] = valuehisto[fields][1];
+        foundresolved--;
+        resolvedarr[foundate] = foundresolved;
+        closearr[foundate] = foundclosed;
+        newarr[foundate] = foundopen;
+        foundate++;
+      }
+      isunique = 0;
+    }*/
+  }
+  
+  for (var display in uniquedate) {
+    rangeresults.offset(display,1).setValue(uniquedate[display]);
+    rangeresults.offset(display,2).setValue(closearr[display]);
+    rangeresults.offset(display,3).setValue(newarr[display]);
+    rangeresults.offset(display,4).setValue(resolvedarr[display]);
+  }
+}
+
+// --------------------------------------------------------------------------------OLD CODE -------------------------------------------- //
+function myGraphClosed() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("ResultsHisto");
+  var resultsrange = ss.getRange('F2');
+  var rangehisto = ss.getRange(2, 1,ss.getLastRow(),ss.getLastColumn());
+  var valuehisto = rangehisto.getValues();
+  var uniquedate = new Array(rangehisto.getWidth());
+  var datescount = new Array(rangehisto.getWidth());
+  
+  
+  // get unique dates
+  var alldates = 0;
+  var datecount = 0;
+  var datesvalue = 0;
+  var isunique = 0;
+  for (var alldates in valuehisto) {
+    isunique = 0;
+    for (var knowndate in uniquedate) {
+      if (valuehisto[alldates][1].valueOf() == uniquedate[knowndate].valueOf()) {
+        datescount[knowndate]++;
+        isunique++;
+      }
+    }
+    if (isunique == 0) {
+      uniquedate[datecount] = valuehisto[alldates][1];
+      datescount[datecount] = 1;
+      datecount++;
+    }
+  }
+  
+  
+  for (var display in uniquedate) {
+    resultsrange.offset(display,0).setValue(uniquedate[display]);
+    resultsrange.offset(display,1).setValue(datescount[display]);
+  }
+}
+
+
+function myGraphNew() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("ResultsHisto");
+  var resultsrange = ss.getRange('F2');
+  var rangehisto = ss.getRange(2, 3,ss.getLastRow(),ss.getLastColumn());
+  var valuehisto = rangehisto.getValues();
+  var uniquedate = new Array(rangehisto.getWidth());
+  var datescount = new Array(rangehisto.getWidth());
+  
+  
+  // get unique dates
+  var alldates = 0;
+  var datecount = 0;
+  var datesvalue = 0;
+  var isunique = 0;
+  for (var alldates in valuehisto) {
+    isunique = 0;
+    for (var knowndate in uniquedate) {
+      if (valuehisto[alldates][1].valueOf() == uniquedate[knowndate].valueOf()) {
+        datescount[knowndate]++;
+        isunique++;
+      }
+    }
+    if (isunique == 0) {
+      uniquedate[datecount] = valuehisto[alldates][1];
+      datescount[datecount] = 1;
+      datecount++;
+    }
+  }
+  
+  
+  for (var display in uniquedate) {
+    resultsrange.offset(display,2).setValue(uniquedate[display]);
+    resultsrange.offset(display,3).setValue(datescount[display]);
+  }
+  
+}

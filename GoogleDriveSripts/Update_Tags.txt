@@ -1,0 +1,179 @@
+
+
+function moulinette() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  var arr = ["focus, boot", "focus, videos", "focus, newgame", "focus, options", "focus, all", "focus, credits", "focus, quit", "focus, difficulty", "focus, M00_S00", "focus, M01_S01", "focus, M01_S02", "focus, M01_H03", "focus, M02_S03", "focus, M02_S04", "focus, M02_H01", "focus, M03_S05", "focus, M03_S06", "focus, M03_H02", "focus, M04_S07",  "focus, M04_S08",  "focus, M04_H02", "focus, M05_S09", "focus, M05_S10", "focus, M05_H02", "focus, M06_S11", "focus, M06_H03", "focus, M06_S01", "focus, M07_S06", "focus, M07_S05", "focus, M07_H02", "focus, M08_S10", "focus, M08_S09", "focus, M08_H02", "focus, M09_S05", "focus, M09_H02", "focus, Retry", "focus, multi", "focus, ciné", "focus, IO", "focus, craft", "focus, consommable", "focus, skill", "focus, ingredients", "focus, loot", "focus, spell, styx", "focus, spell, clone", "focus, equip", "3C", "focus, pickpocket", "focus, reward", "focus, kill", "focus, gob", "focus, elf", "focus, human", "focus, dwarf", "focus, troll", "focus, orc", "focus, roach", "focus, flyer", "focus, trap", "focus, queenroach", "focus, golem", "focus, anim", "focus, IA", "focus, son", "focus, ui", "focus, gui", "focus, save", "focus, options", "focus, en", "focus, fr", "focus, x1", "focus, ps4", "focus, pc", "focus, x1controller", "focus, x360controller", "focus, ps4controller", "focus, keyboardmouse", "focus, steam", "focus, install"];
+  var rangedb = ss.getRange(2, 7, ss.getLastRow(), 1);
+  var valuedb = rangedb.getValues();
+  var maxrow = ss.getLastRow();
+  var row = 2;
+  var acc = 0;
+  
+  while (row < maxrow) {
+    var current = row-2;
+    
+    for (var tags in arr) {
+      if (valuedb[current].toString().search(arr[tags]) != -1) {
+        acc = 1;
+        break;
+      }
+    }
+    
+    if (acc != 1) {
+      rangedb.offset(current,0).setBackground("red");
+    }
+    if (acc == 1) {
+      rangedb.offset(current,0).setBackground("white");
+    }
+    acc = 0;
+    
+    row++;
+  }
+}
+
+function UpdateTag() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+
+  var cols = 2;
+  var col = 0;
+  var row = 2;
+  var maxrow = 98;
+  
+  var rangedb = ss.getRange(2, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < maxrow) {
+    if (ss.getRange(row,1).getValue() != "") {
+      var formulall = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%'\")));2);0)";
+      var formulallcri = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%' AND (N LIKE 'Bloquant' OR N LIKE 'Critique') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formulallmaj = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%' AND (N LIKE 'Majeur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formulallmin = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%' AND (N LIKE 'Mineur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, pc%' AND (N LIKE 'Bloquant' OR N LIKE 'Critique') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula2 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, pc%' AND (N LIKE 'Majeur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula3 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, pc%' AND (N LIKE 'Mineur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula4 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, x1%' AND (N LIKE 'Bloquant' OR N LIKE 'Critique') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula5 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, x1%' AND (N LIKE 'Majeur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula6 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, x1%' AND (N LIKE 'Mineur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula7 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, ps4%' AND (N LIKE 'Bloquant' OR N LIKE 'Critique') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula8 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, ps4%' AND (N LIKE 'Majeur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula9 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%, ps4%' AND (N LIKE 'Mineur') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned')\")));2);0)";
+      var formula10 = "=IFERROR(INDEX(QUERY(dbMantis!$A:$AA;CONCAT(\"Select Count(G) where G LIKE 'focus, \";CONCAT($A" + row + ";\"%' AND (D LIKE 'resolved')\")));2);0)";       
+      rangedb.offset(rowdb,col).setValue(formulall);
+      rangedb.offset(rowdb,col+1).setValue(formulallcri);
+      rangedb.offset(rowdb,col+2).setValue(formulallmaj);
+      rangedb.offset(rowdb,col+3).setValue(formulallmin);
+      rangedb.offset(rowdb,col+4).setValue(formula);
+      rangedb.offset(rowdb,col+5).setValue(formula2);
+      rangedb.offset(rowdb,col+6).setValue(formula3);
+      rangedb.offset(rowdb,col+7).setValue(formula4);
+      rangedb.offset(rowdb,col+8).setValue(formula5);
+      rangedb.offset(rowdb,col+9).setValue(formula6);
+      rangedb.offset(rowdb,col+10).setValue(formula7);
+      rangedb.offset(rowdb,col+11).setValue(formula8);
+      rangedb.offset(rowdb,col+12).setValue(formula9);
+      rangedb.offset(rowdb,col+13).setValue(formula10);
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+function UpdateFocus() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  var cols = 7;
+  var col = 0;
+  var row = 2;
+  
+  var rangedb = ss.getRange(2, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < 305) {
+    if (ss.getRange(row,6).getValue() != "") {
+      rangedb.offset(rowdb,col).setValue("focus, " + ss.getRange(row,6).getValue());
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+
+function UpdateHL() {
+  
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+ 
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  var cols = 7;
+  var col = 0;
+  var row = 2;
+  var maxrow = 98;
+  
+  var rangedb = ss.getRange(2, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < maxrow) {
+    if (ss.getRange(row,4).getValue() != "") {
+      var formulall = "=IF(OR(CountTags!C" + row + " > 0; CountTags!F" + row + " > 0 ; CountTags!I" + row + " > 0 ; CountTags!L" + row + " > 0) ;CONCATENATE(\"Blockers : \";CountTags!C" + row + " + CountTags!F" + row + " + CountTags!I" + row + " + CountTags!L" + row + ";IF ( OR (CountTags!D" + row + " > 0; CountTags!G" + row + " > 0 ; CountTags!J" + row + " > 0 ; CountTags!M" + row + " > 0);CONCATENATE(CHAR(10); \"Majors : \"; CountTags!D" + row + " + CountTags!G" + row + " + CountTags!J" + row + " + CountTags!M" + row + ");\"\");IF ( OR (CountTags!E" + row + " > 0;CountTags!H" + row + " > 0;CountTags!K" + row + " > 0;CountTags!N" + row + " > 0);CONCATENATE(CHAR(10); \"Minors : \"; CountTags!E" + row + " + CountTags!H" + row + " + CountTags!K" + row + " + CountTags!N" + row + "); \"\"));IF(OR (CountTags!D" + row + " > 0;CountTags!G" + row + " > 0;CountTags!J" + row + " > 0;CountTags!M" + row + " > 0) ;CONCATENATE(\"Majors : \";CountTags!D" + row + " + CountTags!G" + row + " + CountTags!J" + row + " + CountTags!M" + row + "; IF (OR(CountTags!E" + row + " > 0;CountTags!H" + row + " > 0;CountTags!K" + row + " > 0;CountTags!N" + row + " > 0); CONCATENATE(CHAR(10); \"Minors : \"; CountTags!E" + row + " + CountTags!H" + row + " + CountTags!K" + row + " + CountTags!N" + row + "); \"\"));IF(OR(CountTags!E" + row + " > 0 ;CountTags!H" + row + " > 0 ;CountTags!K" + row + " > 0 ;CountTags!N" + row + " > 0 ); CONCATENATE(\"Minors : \";CountTags!E" + row + " + CountTags!H" + row + " +CountTags!K" + row + " +CountTags!N" + row + "); \"FillMe\")))";
+      var formulapc = "=IF(CountTags!F" + row + " > 0 ;CONCATENATE(\"Blockers : \";CountTags!F" + row + ";IF (CountTags!G" + row + " > 0;CONCATENATE(CHAR(10); \"Majors : \"; CountTags!G" + row + ");\"\");IF (CountTags!H" + row + " > 0;CONCATENATE(CHAR(10); \"Minors : \"; CountTags!H" + row + "); \"\"));IF(CountTags!G" + row + " > 0 ;CONCATENATE(\"Majors : \";CountTags!G" + row + "; IF (CountTags!H" + row + " > 0; CONCATENATE(CHAR(10); \"Minors : \"; CountTags!H" + row + "); \"\"));IF(CountTags!H" + row + " > 0 ; CONCATENATE(\"Minors : \";CountTags!H" + row + "); \"FillMe\")))";
+      var formulax1 = "=IF(CountTags!I" + row + " > 0 ;CONCATENATE(\"Blockers : \";CountTags!I" + row + ";IF (CountTags!J" + row + " > 0;CONCATENATE(CHAR(10); \"Majors : \"; CountTags!J" + row + ");\"\");IF (CountTags!K" + row + " > 0;CONCATENATE(CHAR(10); \"Minors : \"; CountTags!K" + row + "); \"\"));IF(CountTags!J" + row + " > 0 ;CONCATENATE(\"Majors : \";CountTags!J" + row + "; IF (CountTags!K" + row + " > 0; CONCATENATE(CHAR(10); \"Minors : \"; CountTags!K" + row + "); \"\"));IF(CountTags!K" + row + " > 0 ; CONCATENATE(\"Minors : \";CountTags!K" + row + "); \"FillMe\")))";
+      var formulaps4 = "=IF(CountTags!L" + row + " > 0 ;CONCATENATE(\"Blockers : \";CountTags!L" + row + ";IF (CountTags!M" + row + " > 0;CONCATENATE(CHAR(10); \"Majors : \"; CountTags!M" + row + ");\"\");IF (CountTags!N" + row + " > 0;CONCATENATE(CHAR(10); \"Minors : \"; CountTags!N" + row + "); \"\"));IF(CountTags!M" + row + " > 0 ;CONCATENATE(\"Majors : \";CountTags!M" + row + "; IF (CountTags!N" + row + " > 0; CONCATENATE(CHAR(10); \"Minors : \"; CountTags!N" + row + "); \"\"));IF(CountTags!N" + row + " > 0 ; CONCATENATE(\"Minors : \";CountTags!N" + row + "); \"FillMe\")))";
+
+      if (rangedb.offset(rowdb,col).getValue() != "N/A")
+        rangedb.offset(rowdb,col).setValue(formulall);
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      
+      
+      if (rangedb.offset(rowdb,col+1).getValue() != "N/A")
+      rangedb.offset(rowdb,col+1).setValue(formulapc);
+      if (rangedb.offset(rowdb,col+1).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+1).setDataValidation(rule);
+        rangedb.offset(rowdb,col+1).setValue("FillMe");
+      }
+      
+      
+      if (rangedb.offset(rowdb,col+2).getValue() != "N/A")
+      rangedb.offset(rowdb,col+2).setValue(formulax1);
+      if (rangedb.offset(rowdb,col+2).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+2).setDataValidation(rule);
+        rangedb.offset(rowdb,col+2).setValue("FillMe");
+      }
+      
+      
+      if (rangedb.offset(rowdb,col+3).getValue() != "N/A")
+      rangedb.offset(rowdb,col+3).setValue(formulaps4);
+      if (rangedb.offset(rowdb,col+3).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+3).setDataValidation(rule);
+        rangedb.offset(rowdb,col+3).setValue("FillMe");
+      }
+      
+      rangedb.offset(rowdb,col+4).setValue("=CountTags!O"+row);
+      
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}

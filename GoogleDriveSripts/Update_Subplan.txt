@@ -1,0 +1,395 @@
+// ------------------------------ MISSIONS ------------------------------//
+function UpdateMission() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Missions");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 4; // start row
+  var cols = 5; // start col
+  var coltag = 2; // tag col
+  var numcol = 31; // number of cols
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+// ------------------------------ CS ------------------------------//
+function UpdateCS() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("CS");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 4; // start row
+  var cols = 3; // start col
+  var coltag = 2; // tag col
+  var numcol = 14; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,coltag).getValue() == "All")
+      var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND not G CONTAINS 'M0') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND not G CONTAINS 'M0') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND not G CONTAINS 'M0') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";        
+      else  
+      var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ciné' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+// ------------------------------ AI ------------------------------//
+function UpdateAI() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AI");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 4; // start row
+  var cols = 3; // start col
+  var coltag = 2; // tag col
+  var numcol = 16; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,coltag).getValue() == "IA") {
+        var formulapath = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulapatr = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulakill = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formuladetect = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulasearch = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formuladuel = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formularally = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulaspecial = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulavie = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulaall = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND (not G CONTAINS 'gob' AND not G CONTAINS 'elf' AND not G CONTAINS 'human' AND not G CONTAINS 'dwarf' AND not G CONTAINS 'troll' AND not G CONTAINS 'orc' AND not G CONTAINS 'orc' AND not G CONTAINS 'troll' AND not G CONTAINS 'roach' AND not G CONTAINS 'flyer' AND not G CONTAINS 'trap' AND not G CONTAINS 'queenroach' AND not G CONTAINS 'golem') AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND (not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      }
+      else {
+        var formulapath = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pathfind' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulapatr = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'patrol' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulakill = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formuladetect = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'detection' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulasearch = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'search' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formuladuel = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'duel' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formularally = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'rally' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulaspecial = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'special' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulavie = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'vie' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        var formulaall = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "' AND (not G CONTAINS 'pathfind' AND not G CONTAINS 'patrol' AND not G CONTAINS 'kill' AND not G CONTAINS 'detection' AND (not G CONTAINS 'search' AND not G CONTAINS 'duel' AND not G CONTAINS 'rally' AND not G CONTAINS 'special' AND not G CONTAINS 'vie')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      }
+      
+      if (rangedb.offset(rowdb,col).getValue() != "N/A")
+        rangedb.offset(rowdb,col).setValue(formulapath);
+      if (rangedb.offset(rowdb,col+1).getValue() != "N/A")
+        rangedb.offset(rowdb,col+1).setValue(formulapatr);
+      if (rangedb.offset(rowdb,col+2).getValue() != "N/A")
+        rangedb.offset(rowdb,col+2).setValue(formulakill);
+      if (rangedb.offset(rowdb,col+3).getValue() != "N/A")
+        rangedb.offset(rowdb,col+3).setValue(formuladetect);
+      if (rangedb.offset(rowdb,col+4).getValue() != "N/A")
+        rangedb.offset(rowdb,col+4).setValue(formulasearch);
+      if (rangedb.offset(rowdb,col+5).getValue() != "N/A")
+        rangedb.offset(rowdb,col+5).setValue(formuladuel);
+      if (rangedb.offset(rowdb,col+6).getValue() != "N/A")
+        rangedb.offset(rowdb,col+6).setValue(formularally);
+      if (rangedb.offset(rowdb,col+7).getValue() != "N/A")
+        rangedb.offset(rowdb,col+7).setValue(formulaspecial);
+      if (rangedb.offset(rowdb,col+8).getValue() != "N/A")
+        rangedb.offset(rowdb,col+8).setValue(formulavie);
+      if (rangedb.offset(rowdb,col+9).getValue() != "N/A")
+        rangedb.offset(rowdb,col+9).setValue(formulaall);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+1).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+1).setDataValidation(rule);
+        rangedb.offset(rowdb,col+1).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+2).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+2).setDataValidation(rule);
+        rangedb.offset(rowdb,col+2).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+3).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+3).setDataValidation(rule);
+        rangedb.offset(rowdb,col+3).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+4).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+4).setDataValidation(rule);
+        rangedb.offset(rowdb,col+4).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+5).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+5).setDataValidation(rule);
+        rangedb.offset(rowdb,col+5).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+6).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+6).setDataValidation(rule);
+        rangedb.offset(rowdb,col+6).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+7).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+7).setDataValidation(rule);
+        rangedb.offset(rowdb,col+7).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+8).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+8).setDataValidation(rule);
+        rangedb.offset(rowdb,col+8).setValue("FillMe");
+      }
+      if (rangedb.offset(rowdb,col+9).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col+9).setDataValidation(rule);
+        rangedb.offset(rowdb,col+9).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+// ------------------------------ Skills ------------------------------//
+function UpdateSkills() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Skills");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 4; // start row
+  var cols = 7; // start col
+  var coltag = 5; // tag col
+  var numcol = 51; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,coltag).getValue() == "All")
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND (not G CONTAINS 'Assa' AND not G CONTAINS 'Perception' AND not G CONTAINS 'Stealth' AND not G CONTAINS 'Clone' AND not G CONTAINS 'Alchemy' AND not G CONTAINS 'Master')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND (not G CONTAINS 'Assa' AND not G CONTAINS 'Perception' AND not G CONTAINS 'Stealth' AND not G CONTAINS 'Clone' AND not G CONTAINS 'Alchemy' AND not G CONTAINS 'Master')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND (not G CONTAINS 'Assa' AND not G CONTAINS 'Perception' AND not G CONTAINS 'Stealth' AND not G CONTAINS 'Clone' AND not G CONTAINS 'Alchemy' AND not G CONTAINS 'Master')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";        
+      else  
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'skill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+// ------------------------------ Spells ------------------------------//
+function UpdateSpells() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Spells");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 4; // start row
+  var cols = 5; // start col
+  var coltag = 3; // tag col
+  var numcol = 16; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,coltag).getValue() == "All")
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND (not G contains 'styx' OR (not G CONTAINS 'ambervision' AND not G CONTAINS 'createclone' AND not G CONTAINS 'killclone' AND not G CONTAINS 'invis' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess')) AND (not G contains 'clone' OR (not G CONTAINS 'smokebomb' AND not G CONTAINS 'harass' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess' AND not G CONTAINS 'killclone'))) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND (not G contains 'styx' OR (not G CONTAINS 'ambervision' AND not G CONTAINS 'createclone' AND not G CONTAINS 'killclone' AND not G CONTAINS 'invis' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess')) AND (not G contains 'clone' OR (not G CONTAINS 'smokebomb' AND not G CONTAINS 'harass' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess' AND not G CONTAINS 'killclone'))) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND (not G contains 'styx' OR (not G CONTAINS 'ambervision' AND not G CONTAINS 'createclone' AND not G CONTAINS 'killclone' AND not G CONTAINS 'invis' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess')) AND (not G contains 'clone' OR (not G CONTAINS 'smokebomb' AND not G CONTAINS 'harass' AND not G CONTAINS 'rebirth' AND not G CONTAINS 'possess' AND not G CONTAINS 'killclone'))) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";        
+      else if (ss.getRange(row,coltag-2).getValue() == "Styx") 
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'styx' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'styx' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'styx' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      else
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'clone' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'clone' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'spell' AND G CONTAINS 'clone' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+// ------------------------------ Interactions ------------------------------//
+function UpdateInteractions() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Interactions");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 5; // start row
+  var cols = 3; // start col
+  var coltag = 2; // tag col
+  var numcol = 37; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,coltag-1).getValue() == "IO") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND (not G CONTAINS 'malle' AND not G CONTAINS 'placard' AND not G CONTAINS 'cadavre' AND not G CONTAINS 'fruit' AND not G CONTAINS 'porte' AND not G CONTAINS 'torche' AND not G CONTAINS 'jarre' AND not G CONTAINS 'cloche' AND not G CONTAINS 'lustre' AND not G CONTAINS 'tonneau' AND not G CONTAINS 'levier')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND (not G CONTAINS 'malle' AND not G CONTAINS 'placard' AND not G CONTAINS 'cadavre' AND not G CONTAINS 'fruit' AND not G CONTAINS 'porte' AND not G CONTAINS 'torche' AND not G CONTAINS 'jarre' AND not G CONTAINS 'cloche' AND not G CONTAINS 'lustre' AND not G CONTAINS 'tonneau' AND not G CONTAINS 'levier')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND (not G CONTAINS 'malle' AND not G CONTAINS 'placard' AND not G CONTAINS 'cadavre' AND not G CONTAINS 'fruit' AND not G CONTAINS 'porte' AND not G CONTAINS 'torche' AND not G CONTAINS 'jarre' AND not G CONTAINS 'cloche' AND not G CONTAINS 'lustre' AND not G CONTAINS 'tonneau' AND not G CONTAINS 'levier')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'IO' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      else if (ss.getRange(row,coltag-1).getValue() == "3C") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND (not G CONTAINS 'jump' AND not G CONTAINS 'accroche' AND not G CONTAINS 'roulade' AND not G CONTAINS 'run' AND not G CONTAINS 'sneak' AND not G CONTAINS 'climb' AND not G CONTAINS 'drop' AND not G CONTAINS 'cover' AND not G CONTAINS 'pipe' AND not G CONTAINS 'rope' AND not G CONTAINS 'cri')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND (not G CONTAINS 'jump' AND not G CONTAINS 'accroche' AND not G CONTAINS 'roulade' AND not G CONTAINS 'run' AND not G CONTAINS 'sneak' AND not G CONTAINS 'climb' AND not G CONTAINS 'drop' AND not G CONTAINS 'cover' AND not G CONTAINS 'pipe' AND not G CONTAINS 'rope' AND not G CONTAINS 'cri')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND (not G CONTAINS 'jump' AND not G CONTAINS 'accroche' AND not G CONTAINS 'roulade' AND not G CONTAINS 'run' AND not G CONTAINS 'sneak' AND not G CONTAINS 'climb' AND not G CONTAINS 'drop' AND not G CONTAINS 'cover' AND not G CONTAINS 'pipe' AND not G CONTAINS 'rope' AND not G CONTAINS 'cri')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '3C' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      else if (ss.getRange(row,coltag-1).getValue() == "Pickpocket") {
+        var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pickpocket') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pickpocket') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'pickpocket') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      else if (ss.getRange(row,coltag-1).getValue() == "Kill") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND (not G CONTAINS 'mortaldrive' AND not G CONTAINS 'airkill' AND not G CONTAINS 'coverkill' AND not G CONTAINS 'silentkill' AND not G CONTAINS 'noisekill' AND not G CONTAINS 'hiddenkill')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND (not G CONTAINS 'mortaldrive' AND not G CONTAINS 'airkill' AND not G CONTAINS 'coverkill' AND not G CONTAINS 'silentkill' AND not G CONTAINS 'noisekill' AND not G CONTAINS 'hiddenkill')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND (not G CONTAINS 'mortaldrive' AND not G CONTAINS 'airkill' AND not G CONTAINS 'coverkill' AND not G CONTAINS 'silentkill' AND not G CONTAINS 'noisekill' AND not G CONTAINS 'hiddenkill')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS ' kill' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+
+// ------------------------------ Loots ------------------------------//
+function UpdateLoots() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Loots");
+
+  var ssrules = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangerule = ssrules.getRange("A2:A999");
+  var rule = SpreadsheetApp.newDataValidation().requireValueInRange(rangerule).build();
+  
+  var col = 0;
+  var row = 5; // start row
+  var cols = 5; // start col
+  var coltag = 4; // tag col
+  var numcol = 27; // number of cols +1
+  
+  var rangedb = ss.getRange(row, cols, 1, 1);
+  var valuedb = rangedb.getValues();
+  var rowdb = 0;
+  
+  while (row < numcol) {
+    if (ss.getRange(row,coltag).getValue() != "") {
+      if (ss.getRange(row,1).getValue() == "Consommables") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'consommable' AND (not G CONTAINS 'healthflask' AND not G CONTAINS 'amberflask' AND not G CONTAINS 'acidflask' AND not G CONTAINS 'acidtrap' AND not G CONTAINS 'smellflask' AND not G CONTAINS 'lethaldart' AND not G CONTAINS 'toxicdart' AND not G CONTAINS 'picklock' AND not G CONTAINS 'cocon' AND not G CONTAINS 'sandball' AND not G CONTAINS 'distract')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'consommable' AND (not G CONTAINS 'healthflask' AND not G CONTAINS 'amberflask' AND not G CONTAINS 'acidflask' AND not G CONTAINS 'acidtrap' AND not G CONTAINS 'smellflask' AND not G CONTAINS 'lethaldart' AND not G CONTAINS 'toxicdart' AND not G CONTAINS 'picklock' AND not G CONTAINS 'cocon' AND not G CONTAINS 'sandball' AND not G CONTAINS 'distract')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'consommable' AND (not G CONTAINS 'healthflask' AND not G CONTAINS 'amberflask' AND not G CONTAINS 'acidflask' AND not G CONTAINS 'acidtrap' AND not G CONTAINS 'smellflask' AND not G CONTAINS 'lethaldart' AND not G CONTAINS 'toxicdart' AND not G CONTAINS 'picklock' AND not G CONTAINS 'cocon' AND not G CONTAINS 'sandball' AND not G CONTAINS 'distract')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      else if (ss.getRange(row,1).getValue() == "Ingrédients") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ingredient' AND (not G CONTAINS 'ironore' AND not G CONTAINS 'rawamber' AND not G CONTAINS 'insectegg' AND not G CONTAINS 'instablespore' AND not G CONTAINS 'venomspore')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ingredient' AND (not G CONTAINS 'ironore' AND not G CONTAINS 'rawamber' AND not G CONTAINS 'insectegg' AND not G CONTAINS 'instablespore' AND not G CONTAINS 'venomspore')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'ingredient' AND (not G CONTAINS 'ironore' AND not G CONTAINS 'rawamber' AND not G CONTAINS 'insectegg' AND not G CONTAINS 'instablespore' AND not G CONTAINS 'venomspore')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      else if (ss.getRange(row,1).getValue() == "Loots") {
+        if (ss.getRange(row,coltag).getValue() == "All") 
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'loot' AND (not G CONTAINS 'token' AND not G CONTAINS 'recette' AND not G CONTAINS 'quartz')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'loot' AND (not G CONTAINS 'token' AND not G CONTAINS 'recette' AND not G CONTAINS 'quartz')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS 'loot' AND (not G CONTAINS 'token' AND not G CONTAINS 'recette' AND not G CONTAINS 'quartz')) AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";
+        else
+          var formula = "=IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Critique')\");2));\"Block\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Majeur')\");2));\"Major Fail\"; (IF(IFERROR(INDEX(QUERY(dbMantis!$A:$AA;\"Select Count(G) where (G CONTAINS 'focus' AND G CONTAINS '" + ss.getRange(row,coltag).getValue() + "') AND (D LIKE 'new' OR D LIKE 'accepted' OR D LIKE 'assigned') AND (N LIKE 'Mineur')\");2));\"Minor Fail\";\"FillMe\")))))";       
+      }
+      
+      rangedb.offset(rowdb,col).setValue(formula);
+      
+      if (rangedb.offset(rowdb,col).getValue() == "FillMe") {
+        rangedb.offset(rowdb,col).setDataValidation(rule);
+        rangedb.offset(rowdb,col).setValue("FillMe");
+      }
+      row++;
+      rowdb++;
+    }
+    else { 
+      row++;
+      rowdb++;
+    }
+  }
+}
+
+
+

@@ -1,0 +1,81 @@
+function setFormulaCell() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var active = ss.getActiveRange();
+  
+//  var formula_backup = "=IF(OR(COUNTIF(C8:F; \"Block\") >= 1;); CONCATENATE(\"Block : \";(COUNTIF(C8:F; \"Block\")) ; \"\n Fail : \"; (COUNTIF(C8:F;\"Major fail\"))+(COUNTIF(C8:F;\"Minor Fail\"));\"\nPass : \"; (COUNTIF(C8:F; \"Pass\")); \"\nNot tested : \"; (COUNTIF(C8:F;\"WIP\"))+(COUNTIF(C8:F;\"Not tested\"))); IF (OR(COUNTIF(C8:F; \"Major fail\") >= 1;); CONCATENATE(\"Major fail : \";(COUNTIF(C8:F; \"Major fail\"));\" (\"; (COUNTIF(C8:F; \"Minor fail\")); \" minors)\";\"\nPass : \"; (COUNTIF(C8:F; \"Pass\"));\"\n Not tested : \"; (COUNTIF(C8:F;\"WIP\"))+(COUNTIF(C8:F;\"Not tested\"))); IF(OR(COUNTIF(C8:F; \"Minor fail\") >= 1;); CONCATENATE(\"Minor Fail : \"; (COUNTIF(C8:F; \"Minor fail\"));; \"\nPass : \"; (COUNTIF(C8:F; \"Pass\"));; \"\n Not tested : \"; (COUNTIF(C8:F;\"WIP\"))+(COUNTIF(C8:F;\"Not tested\"))); IF(OR(COUNTIF(C8:F; \"Pass\") >= 1); CONCATENATE(\"Pass :\"; (COUNTIF(C8:F; \"Pass\"));\"\nWIP : \"; (COUNTIF(C8:F; \"WIP\")); \"\nNot tested : \"; (COUNTIF(C8:F; \"Not tested\"))); CONCATENATE(\"WIP : \"; (COUNTIF(C8:F; \"WIP\")); \"\nNot tested : \"; (COUNTIF(C8:F; \"Not tested\")))))))"
+  var formula = "=IF(OR(COUNTIF(" + active.getValue() + "; \"Block\") >= 1;); CONCATENATE(\"Block : \";(COUNTIF(" + active.getValue() + "; \"Block\")) ; \"\n Fail : \"; (COUNTIF(" + active.getValue() + ";\"Major fail\"))+(COUNTIF(" + active.getValue() + ";\"Minor Fail\"));\"\nPass : \"; (COUNTIF(" + active.getValue() + "; \"Pass\")); \"\nNot tested : \"; (COUNTIF(" + active.getValue() + ";\"WIP\"))+(COUNTIF(" + active.getValue() + ";\"Not tested\"))); IF (OR(COUNTIF(" + active.getValue() + "; \"Major fail\") >= 1;); CONCATENATE(\"Major fail : \";(COUNTIF(" + active.getValue() + "; \"Major fail\"));\" (\"; (COUNTIF(" + active.getValue() + "; \"Minor fail\")); \" minors)\";\"\nPass : \"; (COUNTIF(" + active.getValue() + "; \"Pass\"));\"\n Not tested : \"; (COUNTIF(" + active.getValue() + ";\"WIP\"))+(COUNTIF(" + active.getValue() + ";\"Not tested\"))); IF(OR(COUNTIF(" + active.getValue() + "; \"Minor fail\") >= 1;); CONCATENATE(\"Minor Fail : \"; (COUNTIF(" + active.getValue() + "; \"Minor fail\"));; \"\nPass : \"; (COUNTIF(" + active.getValue() + "; \"Pass\"));; \"\n Not tested : \"; (COUNTIF(" + active.getValue() + ";\"WIP\"))+(COUNTIF(" + active.getValue() + ";\"Not tested\"))); IF(OR(COUNTIF(" + active.getValue() + "; \"Pass\") >= 1); CONCATENATE(\"Pass :\"; (COUNTIF(" + active.getValue() + "; \"Pass\"));\"\nWIP : \"; (COUNTIF(" + active.getValue() + "; \"WIP\")); \"\nNot tested : \"; (COUNTIF(" + active.getValue() + "; \"Not tested\"))); CONCATENATE(\"WIP : \"; (COUNTIF(" + active.getValue() + "; \"WIP\")); \"\nNot tested : \"; (COUNTIF(" + active.getValue() + "; \"Not tested\")))))))"
+
+  ss.getRange('B2').setValue(formula);
+}
+
+function onEdit(e){
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var ssbase = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangebase = ssbase.getRange("D:D");
+  var rangever = ssbase.getRange("C:C");
+  var rangems = ssbase.getRange("B:B");
+  var valuever = rangever.getValues();
+  var valuems = rangems.getValues();
+  var valuebase = rangebase.getValues();
+
+  if ((ss.getName() == "Missions") || (ss.getName() == "CS") || (ss.getName() == "AI") || (ss.getName() == "Skills") || (ss.getName() == "Spells") || (ss.getName() == "Interactions") || 
+    (ss.getName() == "Loots") || (ss.getName() == "Equipement") || (ss.getName() == "Craft") || (ss.getName() == "GUI/Flow") || (ss.getName() == "Anims") || (ss.getName() == "Multiplayer") ||
+    (ss.getName() == "Loca") || (ss.getName() == "Plateformes") || (ss.getName() == "Loading times / Perfs") || (ss.getName() == "Options") || (ss.getName() == "Achievements/Hero stats") ||
+    (ss.getName() == "Controls")){
+    var curDate = Utilities.formatDate(new Date(), "GMT+1", "MM/dd/yyyy")
+    var maxrows = rangebase.getHeight();
+    var count = 0;
+    
+    for (var rows = valuebase.filter(String).length; rows > 0; rows--) {
+      var dateMilestone = valuebase[rows][0];
+      var datecur = new Date(curDate);
+      var datemile = new Date(dateMilestone);
+      if (datecur >= datemile) {
+        var version = valuems[rows][0] + " " + valuever[rows][0];
+        ss.getRange("B1").setValue(version);
+        break;
+      }
+      count++;
+    }
+  }  
+}
+
+function setHighTestables(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values");
+  var rangedb = ssdb.getRange(2, 2,ssdb.getLastRow()-1,1);
+  var valuedb = rangedb.getValues();
+  var active = ss.getActiveRange();
+ /* var valueactive = active.getValues();
+  ss.getRange('I8').setValue(active.getHeight());
+  
+  for (activecells in valueactive) {
+    if (valueactive[activecells][0] != ""){
+      valueactive[activecells][1] = "test";
+    }
+    valueactive[0][0] = "test";
+  }*/
+  
+  var row = active.getRow();
+  var formula = "=IF(OR(";
+  for (values in valuedb) {
+    if (valuedb[values][0] != "") {
+      if (values == 0) {
+        formula += "ISTEXT(QUERY( $E";
+        formula += row;
+        formula += "; \"Select * Where E  like '%";
+        formula += valuedb[values][0];
+        formula += "%' \"))";
+      }
+      else {
+        formula += ";ISTEXT(QUERY( $E";
+        formula += row;
+        formula += "; \"Select * Where E  like '%";
+        formula += valuedb[values][0];
+        formula += "%' \"))";
+      }
+    }
+  }
+  formula += "); \"TODO\";\"PENDING\")";
+  active.offset(0,0).setValue(formula);
+  }

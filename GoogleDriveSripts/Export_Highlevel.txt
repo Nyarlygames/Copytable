@@ -1,0 +1,1125 @@
+/*function onOpen2() {
+  SpreadsheetApp.getActive().
+    addMenu("Test", [{name: 'Show Links', functionName:'showLinks'}]);
+}
+
+function showLinks() {
+  var values = SpreadsheetApp.getActiveRange().getValue().split(';');
+
+  var app = UiApp.createApplication().setTitle('Links'); 
+  var grid = app.createGrid(values.length, 2);
+
+  for( var i = 0; i < values.length; ++i ) {
+    var url = findLink(values[i]);
+    grid.setWidget(
+      i, 0, app.createLabel(values[i])).setWidget(
+      i, 1, url ? app.createAnchor(url, url) : app.createLabel('Not Found'));
+  }
+
+  app.add(grid);
+  SpreadsheetApp.getActive().show(app);
+}
+
+var mapName2Url = null;
+function findLink(name) {
+  if( mapName2Url == null ) { //lazy load
+    mapName2Url = {};
+    var data = SpreadsheetApp.getActive().getSheetByName('People').getDataRange().getValues();
+    for( var i = 1; i < data.length; ++i ) //skipping the header
+      mapName2Url[data[i][0]] = data[i][1];
+  }
+  return mapName2Url[name];
+}*/
+
+
+
+/*function List_from_db() { // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ var cellclean = ss.getRange("E38:I1500");
+ var cellbase = ss.getRange('E38');
+ cellclean.clear({contentsOnly: true});
+  
+  
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+  var celldb = ssdb.getRange('E:E');
+
+ var rowbase = 0;
+ var row = 2;
+ var rangedb = ssdb.getRange(row, 1,ssdb.getLastRow(),ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+ var severity = ss.getRange('E37').getValue()
+    
+   for (var rows in valuedb) {
+     if (valuedb[rows][5] == severity) {
+      cellbase.offset(rowbase, 0).setValue(valuedb[rows][0]); // id 
+      cellbase.offset(rowbase, 1).setValue(valuedb[rows][7]); // status
+      cellbase.offset(rowbase, 2).setValue(valuedb[rows][6]); // reproducibility
+      cellbase.offset(rowbase, 3).setValue(valuedb[rows][5]); // severity
+      cellbase.offset(rowbase, 4).setValue(valuedb[rows][19]); // summary
+      rowbase++
+     }
+    }
+}*/
+
+function ExportHigh() { // choose a range in sheet
+ var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("TestHighAuto");
+ var cellbase = ss.getRange('D1');
+ var cellcount = ss.getRange('B2');
+  // clean la page
+ var cellclean = ss.getRange(1, 1,ss.getLastRow(),4);
+ cellbase.setValue("Cleaning");
+ cellclean.clear({contentsOnly: true});
+  var labelfilter1 = ss.getRange('G1').getValue();
+  var labelfilter2 = ss.getRange('I1').getValue();
+  var labelfilter3 = ss.getRange('K1').getValue();
+  var labelmod = ss.getRange('M1').getValue();
+  var labelproject = ss.getRange('O1').getValue();
+  
+  var filtre_base = "Category";//filtre_base
+  var filtre1 = ss.getRange(1,8).getValue();//repro
+  var filtre2 = ss.getRange(1,10).getValue();//severity
+  var filtre3 = ss.getRange(1,12).getValue();//status
+  var mod = ss.getRange(1,14).getValue();//mod 
+  var project = ss.getRange(1,16).getValue();//project
+  var textmajor = filtre2 + " list :  ";
+cellbase.setValue(cellbase.getValue() + "\n" +  "Selecting project");
+  switch (project) {
+    case "Mordheim":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMordheim");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMordheim!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMordheim!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "BFG":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbBFG");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbBFG!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbBFG!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "TTM":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTTM");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbTTM!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbTTM!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "BB2":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbBB2");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbBB2!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbBB2!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + + maxcat);
+      break;
+    case "SAF":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbSAF");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbSAF!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbSAF!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "FS15":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbFS15");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbFS15!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbFS15!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : "  + maxcat);
+      break;
+    case "TDF16":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbTDF16");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbTDF16!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbTDF16!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "All Focus":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantisFocus");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantisFocus!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantisFocus!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "All Cyanide":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantisCyanide");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantisCyanide!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantisCyanide!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    case "Full":
+ var ssdb = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("dbMantis");
+ var listcat = ss.getRange('A2').setFormula("=UNIQUE(dbMantis!J2:J)"); // compile la liste des catégories
+ var countCatnb = ss.getRange('F1').setFormula("=COUNTUNIQUE(dbMantis!J2:J)");
+  var maxcat = ss.getRange('F1').getValue();
+      ss.getRange('A1').setValue("Nb categories : " + maxcat);
+      break;
+    default:
+      break;
+  }
+  
+cellbase.setValue(cellbase.getValue() + "\n" +  "Setting variables");
+ var celldb = ssdb.getRange('A2');
+
+ var rowbase = 0;
+ var row = 2;
+ var rangedb = ssdb.getRange(row, 1,ssdb.getLastRow()-1,ssdb.getLastColumn());
+ var valuedb = rangedb.getValues();
+  cellbase.setValue(cellbase.getValue() + "\n" +  "Determining max unique filtre1");
+ var rangecat = ss.getRange(2,1,ss.getLastRow() ,ss.getLastColumn()); // l'affiche
+cellbase.setValue(cellbase.getValue() + "\n" +  "Chaos is at work, please be patient...");
+ var valuecat = rangecat.getValues();
+ var indexes = new Array(maxcat); // all category
+  var majorcount = 0;
+  var majortotal = 0;
+ var catcount = 0;
+ var catotal = 0;
+  var boolrow = -1;
+  var catuniques=0;
+ var majorlist = new Array(maxcat); // all categor
+  // init tableau catégorie
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Parsing categories");
+   for (var id in valuecat) {
+     if (rowbase < maxcat) {
+     indexes[rowbase] = valuecat[id][0];
+         majorlist[rowbase] = "";
+     
+     // loop pour count
+     for (var rows in valuedb) {
+       
+       if (valuedb[rows][9] == indexes[rowbase]) {
+         catcount++;
+         catotal++;
+         
+         switch (filtre3) {
+           case "non-resolved":
+                      switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1) && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce") && ((valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged"))) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+             if ((valuedb[rows][7]==filtre3) && (valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }}
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]=="new") || (valuedb[rows][7]=="assigned") ||  (valuedb[rows][7]=="feedback") || (valuedb[rows][7]=="acknowledged")) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+                          
+             break;
+         }
+             break;
+           case "All":
+                  switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce"))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+         }
+             break;
+           default:         switch (filtre1){
+           case "always": 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if ((valuedb[rows][25] == filtre2)) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "unable": 
+             if ((valuedb[rows][6] == "unable to reproduce") && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+             case "All": 
+             if (valuedb[rows][7]==filtre3) {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   break;
+                 default:
+                   break;
+               }}
+             break;
+           default: 
+             if ((valuedb[rows][6] == filtre1) && (valuedb[rows][7]==filtre3))  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   if (valuedb[rows][5] != "minor") {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "all":
+                   majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                   majorcount++;
+                   majortotal++;
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+         }
+             break;
+
+         }
+       }
+ //        cellcount.offset(id,1).setValue(cellcount.offset(id,1).getValue() + valuedb[rows][5]);
+      //       cellbase.setValue("Adding item to filtre2 list");
+      // majorlist[rowbase] = texttemp;
+       switch (mod) {
+         case "nolist" :
+           if (majorcount > 0) {
+         cellcount.offset(id,2).setValue("Ko");
+           }
+           else {
+         cellcount.offset(id,2).setValue("Pass");
+           }   
+           break;
+         case "full":
+           if (majorcount > 0) {
+         cellcount.offset(id,2).setValue(textmajor + majorlist[rowbase]);
+           }
+           else {
+         cellcount.offset(id,2).setValue("Pass");
+           }          
+           break
+       }
+      // textmajor = "";
+       
+     }
+     cellcount.offset(id,0).setValue(catcount); //nb par catégorie
+     cellcount.offset(id,1).setValue(majorcount); // nb major count par catégory
+      /*debug*/
+   //cellcount.offset(id,1).setValue(indexes[rowbase]);
+    // cellcount.offset(id,2).setValue("rowbase" + rowbase + " id " + id + "catcount : " + catcount);
+     
+     // on affiche le compte à côté de chaque catégorie
+     catcount = 0;
+       if (majorcount>0)
+             cellcount.offset(id,2).setFontSize(8);
+       else
+             cellcount.offset(id,2).setFontSize(10);
+     majorcount = 0;
+     rowbase++; 
+     }
+   }
+             cellbase.setValue(cellbase.getValue() + "\n" +  "Displaying totals");
+  ss.getRange(1,3).setValue("Total issues found " +majortotal);
+  ss.getRange('B1').setValue("Total issues : " + catotal);
+  ss.getRange('F1').setValue("Case tampon");
+  
+  cellbase.setValue(labelproject+ " : " + project + "\n" + labelfilter2+ " : " + filtre2 + "\n"+ labelfilter1 + " : " + filtre1+"\n"+ labelfilter3 + " : " + filtre3+"\n"+ labelmod + " : " + mod);              
+  cellbase.setFontSize(8);
+}
+
+
+
+
+/*
+           case "unable": 
+             if (valuedb[rows][6] == "unable to reproduce")  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if ((valuedb[rows][5] == "major") || (valuedb[rows][5] == "block") || (valuedb[rows][5] == "crash")) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                   
+           case "sometimes": 
+             if (valuedb[rows][6] == "sometimes")  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if ((valuedb[rows][5] == "major") || (valuedb[rows][5] == "block") || (valuedb[rows][5] == "crash")) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+                   
+           case "random": 
+             if (valuedb[rows][6] == "random")  {
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if ((valuedb[rows][5] == "major") || (valuedb[rows][5] == "block") || (valuedb[rows][5] == "crash")) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 default:
+                   break;
+               }
+             }
+             break;
+           case "all": 
+               switch (filtre2){
+                 case "Must":
+                   if (valuedb[rows][25] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "major":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "block":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "crash":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minor":
+                   if (valuedb[rows][5] == filtre2) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 case "minorless":
+                   //   if ((valuedb[rows][5] == "major") || (valuedb[rows[5] == "block")  || (valuedb[rows[5] == "crash")) {
+                   if ((valuedb[rows][5] == "major") || (valuedb[rows][5] == "block") || (valuedb[rows][5] == "crash")) {
+                     majorlist[rowbase] += "\n" + valuedb[rows][0]+ "	" +valuedb[rows][19];
+                     majorcount++;
+                     majortotal++;
+                   }
+                   break;
+                 default:
+                   break;
+               }
+             
+             break;
+           default:
+             break;*/
+
+

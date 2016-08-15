@@ -1,0 +1,79 @@
+
+function goToSheet(sheetName) {
+  var sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  SpreadsheetApp.setActiveSheet(sheet);
+}
+
+function goToOptions() {
+  goToSheet("Options");
+}
+function goToGraphs() {
+  goToSheet("Graphs");
+}
+function goToPerfs() {
+  goToSheet("Loading times");
+}
+function goToEquipments() {
+  goToSheet("Warband Equipments");
+}
+function goToUnits() {
+  goToSheet("Warband Units");
+}
+function goToConsommables() {
+  goToSheet("Warband Consommables");
+}
+function goToMutations() {
+  goToSheet("Warband Mutations");
+}
+function goToManagement() {
+  goToSheet("Warband Management");
+}
+function goToRunes() {
+  goToSheet("Warband Runes");
+}
+function goToSkills() {
+  goToSheet("Warband Skills");
+}
+function goToColors() {
+  goToSheet("Warband Colors");
+}
+function goToLobbies() {
+  goToSheet("Skirmish Lobbies");
+}
+function goToAI() {
+  goToSheet("Skirmish AI");
+}
+function goToMulti() {
+  goToSheet("Skirmish Multiplayer");
+}
+function goToMaps() {
+  goToSheet("Skirmish Maps");
+}
+
+function goToCollectibles() {
+  goToSheet("Skirmish Collectibles");
+}
+function goToTuto() {
+  goToSheet("Tutorials");
+}
+function goToHW() {
+  goToSheet("Hardware");
+}
+function goToGUI() {
+  goToSheet("GUI");
+}
+function goToSC() {
+  goToSheet("Sanity Check");
+}
+function goToLoca() {
+  goToSheet("Localization");
+}
+
+function goToHigh() {
+  goToSheet("High level plan");
+}
+
+
+function goToSuggestions() {
+  goToSheet("Suggestions");
+}

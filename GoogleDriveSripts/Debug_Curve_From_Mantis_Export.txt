@@ -1,0 +1,155 @@
+//-------------------------------------------------------------------------------- ALL STATS PER DAY -----------------------------------//
+function myHistoStyx() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rangeresults = ss.getRange('A2'); // Les résultats s'afficheront à partir de la case A2, sur la feuille courante
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Styx"); // Styx = nom de la feuille avec la base de données
+  var rangehisto = sshisto.getRange(2, 1,sshisto.getLastRow()-1,sshisto.getLastColumn()); // On prend les valeurs de la base de données à partir de ligne 2 colonne 1 pour virer les entêtes
+  var valuehisto = rangehisto.getValues();
+  var foundclosed = 0;
+  var foundopen = 0;
+  var foundresolved = 0;
+  var foundate = 0;
+  var uniquedate = new Array(rangehisto.getWidth());
+  var newarr = new Array(rangehisto.getWidth());
+  var closearr = new Array(rangehisto.getWidth());
+  var personnearr = new Array(rangehisto.getWidth());
+  var personnestat = new Array(rangehisto.getWidth());
+  var curdate = new Date();
+  var unikdate = new Date();
+  var curclose = new Date();
+  
+  var createdon = 10; // colonne des dates de création dans la base de données (le compte débute à 0)
+  var updatedon = 5;  // colonne des dates d'update dans la base de données (le compte débute à 0)
+  var status = 3;     // colonne des status dans la base de données (le compte débute à 0)
+  var impact = 13;    // colonne des impacts dans la base de données (le compte débute à 0)
+  var author = 8;    // colonne des impacts dans la base de données (le compte débute à 0)
+  
+  // 10 = created on, 5 = updated on, 3 = status
+  
+  var isuniquenew = 0;
+  var isuniqueclose = 0;
+  var isuniquename = 0;
+  for (var fields in valuehisto) {
+   // if ((valuehisto[fields][impact] == "Mineur") || (valuehisto[fields][impact] == "Cosmétique") || (valuehisto[fields][impact] == "Fonctionnalité")) { // si on veut trier par impact, c'est ici que ça se passe, sinon on vire cette ligne et le "{" ligne 93
+    
+    
+    curdate = Utilities.formatDate(new Date(valuehisto[fields][createdon]), "GMT+1", "dd/MM/yyyy"); // formatte la date "Created on" en JOUR/MOIS/ANNEE et vire les heures
+    curclose = Utilities.formatDate(new Date(valuehisto[fields][updatedon]), "GMT+1", "dd/MM/yyyy"); // formatte la date de "Updated On" en JOUR/MOIS/ANNEE et vire les heures
+        
+    
+    for (var knowndate in uniquedate) { // on va boucler sur toutes les lignes de la base de données, 1 ligne = 1 ticket
+      
+      unikdate = Utilities.formatDate(new Date(uniquedate[knowndate]), "GMT+1", "dd/MM/yyyy") // on formatte la date qu'on regarde actuellement pour la comparer au format des dates de la base de données
+      
+      if (curdate == unikdate) { // si la ligne "created on" actuelle est une date connue, on augmente le nombre de ticket créés à cette date
+        newarr[knowndate]++;
+        isuniquenew = 1;
+      }
+      
+      if ((curclose == unikdate) && (valuehisto[fields][status] == "closed")) { // si la ligne "updated on" actuelle est une date connue, et que le status est "closed", on augmente le nombre de tickets fermés à cette date
+        closearr[knowndate]++;
+        isuniqueclose = 1;
+      }
+    }
+    
+    if ((isuniquenew == 0) && (isuniqueclose == 0)) { // si la date de création ET la date d'update n'est pas connue
+      if (curdate == curclose) { 
+        uniquedate[foundate] = valuehisto[fields][createdon]; // si la date de création est la même que la date d'update, on l'ajoute dans la liste des dates connues
+        if (valuehisto[fields][status] == "closed") {  // si le status est closed, on initialise les tickets fermés à cette date à 1, sinon 0
+          closearr[foundate] = 1;
+        }
+        else {
+          closearr[foundate] = 0;
+        }
+        newarr[foundate] = 1; // dans tous les cas, un ticket a été créé à cette date, on initialise donc le nombre de ticket créés à cette date à 1
+        foundate++;
+      }
+      else {
+        uniquedate[foundate] = valuehisto[fields][createdon];   // si les dates "updated on" et "created on" sont différentes, mais toutes les deux uniques, on ajoute d'abord la date "created on" et on initialise le nombre de ticket créés à 1
+        closearr[foundate] = 0;  
+        newarr[foundate] = 1;
+        foundate++;
+        if (valuehisto[fields][status] == "closed") { // puis, si le status est closed, on ajoute la date "created on" et on initialise le nombre de ticket fermés à 1. (sinon ça veut dire qu'on a fait un new, qu'on l'a updaté, mais sans le fermer)
+          uniquedate[foundate] = valuehisto[fields][updatedon];        
+          closearr[foundate] = 1;      
+          newarr[foundate] = 0;
+          foundate++;
+        }
+      }
+    }
+    else if (isuniquenew == 0) { // si la date "created on" est nouvelle, mais pas la date "updated on", on ajoute juste la date "created on" et on met le nombre de tickets créés à cette date à 1.
+      uniquedate[foundate] = valuehisto[fields][createdon]; 
+      newarr[foundate] = 1;
+      closearr[foundate] = 0;
+      foundate++;
+    }
+    else if ((isuniqueclose == 0) && (valuehisto[fields][status] == "closed")) { // si la date "updated on" est nouvelle, mais pas la date "created on", et que le status est à closed, on ajoute la date "created on" et on initialise les tickets fermés à cette date à 1
+      uniquedate[foundate] = valuehisto[fields][updatedon];
+      closearr[foundate] = 1;
+      newarr[foundate] = 0;
+      foundate++;
+    }
+      
+    
+    isuniquenew = 0;
+    isuniqueclose = 0;
+    
+  //  }
+  }
+  
+  // En fin de boucle sur la base de données on à donc :
+  // - uniquedate contient toutes les dates auxquelles un ticket à été fermé, ou créé, ou les deux
+  // - newarr contient le nombre de tickets ouverts à chaque date
+  // - closearr contient le nombre de tickets fermés à chaque date
+  
+  
+  for (var display in uniquedate) {
+    rangeresults.offset(display,1).setValue(uniquedate[display]); // affiche les dates unique dans la colonne B
+    rangeresults.offset(display,2).setValue(newarr[display]); // affiche les tickets créés par jour dans la colonne C
+    rangeresults.offset(display,3).setValue(closearr[display]); // affiche les tickets fermés par jour dans la colonne D
+  }
+  
+}
+
+
+
+
+// Le problème c'est qu'on ajoute les dates "created on" et "updated on" dans le désordre avec la première fonction.
+// Comme c'est très compliqué de trier ces dates (et de garder le même tri sur les tableaux newarr/closearr), on va donc se servir du filtre de google sheet avant de faire le cumul des nombres à chaque journée. (selectionner les colonnes B/C/D, ajouter un filtre, trier de A à Z)
+// Une fois que c'est fait, on peut lancer cette nouvelle fonction, qui va faire le compte des totaux
+
+
+//-------------------------------------------------------------------------------- SUM STATS PER DAY -----------------------------------//
+function mySumHistoStyx() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var rangeresults = ss.getRange('A2'); // on garde la même plage de données que la fonction précédente
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("ResultsHisto"); // ResultsHisto = nom de la feuille qui contient les résultats obtenus précédemment
+  var rangedate = sshisto.getRange(2, 2,sshisto.getLastRow()-1,1); // on récupère la colonne B qui contient les dates
+  var rangenew = sshisto.getRange(2, 3,sshisto.getLastRow()-1,1); // on récupère la colonne C qui contient le nombre de new
+  var rangeclose = sshisto.getRange(2, 4,sshisto.getLastRow()-1,1); // on récupère la colonne D qui contient le nombre de close
+  
+  
+  var uniquedate = rangedate.getValues();
+  var newarr = rangenew.getValues();
+  var closearr = rangeclose.getValues();
+  
+  var sumnewarr = new Array(rangedate.getWidth());
+  var sumclosearr = new Array(rangedate.getWidth());
+  var sumallarr = new Array(rangedate.getWidth());
+  var sumall = 0;
+  var sumnewlast = 0;
+  var sumcloselast = 0;
+   
+  for (var sum in uniquedate) { // Pour chaque ligne = une date où un ticket a été fermé, créé, ou les deux
+    sumall = Number(sumnewlast) - Number(sumcloselast) + Number(newarr[sum]) - Number(closearr[sum]); // Le ratio new/close des tickets est = à la somme des new avant cette date + le nombre de new à cette date -  la somme des close avant cette date - le nombre de closed à cette date
+    sumnewlast = Number(sumnewlast) + Number(newarr[sum]); // le somme des new à cette date est égal au nombre de new avant cette date + le nombre de new à cette date
+    sumcloselast = Number(sumcloselast) + Number(closearr[sum]); // la somme des close à cette date est égal au nombre de close avant cette date + le nombre de close à cette date
+    sumnewarr[sum] = Number(sumnewlast); // On garde le total de new à cette date dans le tableau des new
+    sumclosearr[sum] = Number(sumcloselast); // On garde le total de close à cette date dans le tableau des close
+    sumallarr[sum] = Number(sumall); // On garde le ration new/close à cette date dans le tableau des ratio
+    
+    rangeresults.offset(sum,4).setValue(sumallarr[sum]); // on affiche les totaux des ratio en colonne E
+    rangeresults.offset(sum,5).setValue(sumnewarr[sum]); // on affiche les totaux des new en colonne F
+    rangeresults.offset(sum,6).setValue(sumclosearr[sum]); // on affiche les totaux des close en colonne G
+  }
+}

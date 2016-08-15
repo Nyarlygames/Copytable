@@ -1,0 +1,123 @@
+function HistoCheck() {
+  var sshisto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Histocheck");
+  var ss = SpreadsheetApp.openById("("SHEETIDHERE");").getSheets(); 
+  sshisto.getRange("A1").setValue(ss);
+  var strings = new Array(ss.length);
+  var i=0;
+  while (i < ss.length) {
+   strings[i] = ss[i].getName();
+   i++;
+ }
+ var rule = SpreadsheetApp.newDataValidation().requireValueInList(strings).build();
+  sshisto.getRange("A1").setDataValidation(rule);
+  sshisto.getRange("A1").setValue(strings[0]);
+}
+
+function HistoCheck2() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Histocheck");
+  var ssdoc = SpreadsheetApp.openById("SHEETIDHERE");
+  var sshisto = ssdoc.getSheetByName(ss.getRange("A1").getValue());
+ 
+  var rangehisto = sshisto.getRange(2, 1,sshisto.getLastRow()-1,sshisto.getLastColumn()); 
+  var valuehisto = rangehisto.getValues();
+  
+  var semaines = new Array(rangehisto.getHeight());
+  var names = new Array(rangehisto.getHeight());
+  var weekid = 0;
+  var dateid = 1;
+  var nameid = 2;
+  var timeid = 3;
+  var uniqueweek =0;
+  var uniquename =0;
+  var thisweek =0;
+  var thisname =0;
+  var nbweek = 0;
+  var nbname = 0;
+  var i = 0;
+  var MaxName = ss.getRange("B1").getValue().valueOf();
+  var counts = new Array(rangehisto.getHeight());
+  ss.getRange("A4").setValue("Nom / Semaine");
+  for (var values in valuehisto) {
+    for (var semaine in semaines) {
+      if (valuehisto[values][weekid] == semaines[semaine]) {
+        thisweek = semaine;
+        uniqueweek = 1;
+      }
+    }
+    for (var name in names) {
+      if (valuehisto[values][nameid] == names[name]) {
+        thisname = name;
+        uniquename = 1;
+      }
+    }
+    if (uniqueweek == 0) {
+      semaines[nbweek] = valuehisto[values][weekid];
+      counts[nbweek] = new Array(rangehisto.getHeight());
+      i = 0;
+      while (i < MaxName) {
+        counts[nbweek][i] = 0;
+        i++;
+      }
+      thisweek = nbweek;
+      nbweek++;
+    }
+    
+    if (uniquename == 0) {
+      names[nbname] = valuehisto[values][nameid];
+      thisname = nbname;
+      nbname++;
+    }
+    counts[thisweek][thisname] += valuehisto[values][timeid].valueOf();
+    uniqueweek = 0;
+    uniquename = 0;
+    thisweek = 0;
+    thisname = 0;
+  }
+  
+  for (var name in names) {
+    ss.getRange("A5").offset(name,0).setValue(names[name]); 
+  }
+  for (var week in semaines) {
+    if (semaines[week] == "") 
+      ss.getRange("B4").offset(0,week).setValue("None"); 
+    else
+      ss.getRange("B4").offset(0,week).setValue(semaines[week]); 
+  }
+  
+  
+  var myrow=0;
+  for (var row in counts) {
+    for (var col in counts[row]) {
+      var ligne = Number(col) + Number(5);
+      switch (row) {
+        case "0" :
+          myrow="B4";
+          break;
+        case "1":
+          myrow="C4";
+          break;
+        case "2":
+          myrow="D4";
+          break;
+        case "3":
+          myrow="E4";
+          break;
+        case "4":
+          myrow="F4";
+          break;
+        case "5":
+          myrow="G4";
+          break;
+        case "6":
+          myrow="H4";
+          break;
+        default:
+          myrow="LOLNOPE";
+          break;
+      }
+      var formula = "=IFERROR(INDEX(Query(importRange(\"("SHEETIDHERE");\";CONCATENATE($A$1;\"!A:J\")); CONCATENATE(\"Select SUM(Col4) where (Col3 Like '\";A" + ligne + ";\"') and (Col1 LIKE '\";" + myrow + ";\"')\"));2);0)";
+      ss.getRange("B5").offset(col, row).setValue(formula);
+    }
+  }
+
+}

@@ -1,0 +1,23 @@
+/*var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Copie de Planning tests");
+
+var range1 = ss.getRange("A1:Z1");
+var range2 = ss.getRange("A2:Z2");*/
+
+function hideRound1Unique() 
+{
+var DocPropr = PropertiesService.getDocumentProperties();
+var hide = DocPropr.getProperty('hidden1');
+  if (hide == "false") {
+    ss.hideRow(range1);
+    DocPropr.setProperty('hidden1', 'true');
+  }
+  else if (hide == "true") {
+    ss.unhideRow(range1);
+    DocPropr.setProperty('hidden1', 'false');
+  }
+  else {
+    //DEFAULT VALUE
+    DocPropr.setProperty('hidden1', 'false');
+  }
+    
+}

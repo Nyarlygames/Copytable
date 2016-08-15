@@ -1,0 +1,74 @@
+function ShowCurrent() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var milestone = ss.getActiveRange().getValue();
+  var range = ss.getRange(1, milestone ,ss.getLastRow() ,1);
+  var value = range.getValues();
+  var maxrow = range.getHeight() - 1;
+  var ligne = 9;
+  
+  var maxcols = ss.getLastColumn();
+  var mincol = 3;
+  while (mincol <= maxcols) {
+    if (mincol != milestone) {
+      ss.hideColumns(mincol);
+    }
+    mincol++;
+  }
+  ss.hideRows(1);
+  ss.hideRows(2);
+  ss.hideRows(3);
+  ss.hideRows(4);
+  
+  while (ligne <= maxrow) {
+    var testcolor = ss.getRange(ligne+1, 1, 1, 1).getBackground();
+    if (testcolor != "#000000") {
+      if (value[ligne][0] == "") {
+        ss.hideRows(ligne+1);
+      }
+    }
+    ligne++;
+  }
+}
+
+
+function HideMS() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var milestone = ss.getActiveRange().getValue();
+  var range = ss.getRange(1, milestone ,ss.getLastRow() ,1);
+  var value = range.getValues();
+  var maxrow = range.getHeight() - 1;
+  var ligne = 9;
+  
+  var maxcols = ss.getLastColumn();
+  var mincol = 3;
+  while (mincol <= maxcols) {
+    if (mincol != milestone) {
+      ss.hideColumns(mincol);
+    }
+    mincol++;
+  }
+  ss.hideRows(1);
+  ss.hideRows(2);
+  ss.hideRows(3);
+  ss.hideRows(4);
+  
+  while (ligne <= maxrow) {
+    var testcolor = ss.getRange(ligne+1, 1, 1, 1).getBackground();
+    if (testcolor != "#000000") {
+      if (value[ligne][0] == "") {
+        ss.hideRows(ligne+1);
+      }
+    }
+    ligne++;
+  }
+}
+
+
+
+
+
+function ShowAll() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+   ss.showRows(1, ss.getLastRow());
+   ss.showColumns(1, ss.getLastColumn());
+}
